@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="shortcut icon"
+      href="https://www.kaigo-antenna.jp/uploads/illustration/main_image/789/202107_009_s.jpg"
+    />
+    <title>ねこあるき</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="progress-circle">
+        <div class="distance">
+          <span id="stepCount">0</span><span class="unit">歩</span>
+        </div>
+        <div class="message">あと200歩で猫がみられるよ〜</div>
+      </div>
+      <div class="cat-image">
+        <img
+          src="https://www.kaigo-antenna.jp/uploads/illustration/main_image/789/202107_009_s.jpg"
+          alt="Cat"
+        />
+      </div>
+      <button class="button" onclick="location.href='../index.html'">
+        おわる
+      </button>
+      <button class="button" id="my_btn">通知</button>
+    </div>
+
+    <!-- Service Worker登録 -->
+    <script src="registerServiceWorker.js"></script>
+    <!-- 通知機能 -->
+    <script src="//code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/push.js/1.0.12/push.min.js"></script>
+    <script src="notification.js"></script>
+    <!-- 歩数計 -->
+    <script src="pedometer.js"></script>
+  </body>
+</html>

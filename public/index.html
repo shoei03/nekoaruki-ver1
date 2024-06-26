@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>ねこあるき</title>
+  <style>
+    body {
+      background-color: #f9e7ce;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    .menu {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .cat-images {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 300px;
+      margin-bottom: 20px;
+    }
+    .cat-images img {
+      width: 60px;
+      height: 60px;
+    }
+    .walk-button {
+      background-color: #f0ad4e;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .walk-button:hover {
+      background-color: #ec971f;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu">☰</div>
+  <div class="cat-images">
+    <img src="cat1.png" alt="Cat 1">
+    <img src="cat2.png" alt="Cat 2">
+    <img src="cat3.png" alt="Cat 3">
+  </div>
+  <button class="walk-button" onclick="location.href='walking.html'">あるく</button>
+</body>
+</html>
