@@ -1,60 +1,68 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <title>ねこあるき</title>
-  <style>
-    body {
-      background-color: #f9e7ce;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-    .menu {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 24px;
-      cursor: pointer;
-    }
-    .cat-images {
-      display: flex;
-      justify-content: space-around;
-      width: 100%;
-      max-width: 300px;
-      margin-bottom: 20px;
-    }
-    .cat-images img {
-      width: 60px;
-      height: 60px;
-    }
-    .walk-button {
-      background-color: #f0ad4e;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      padding: 10px 20px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-    .walk-button:hover {
-      background-color: #ec971f;
-    }
-  </style>
-</head>
-<body>
-  <div class="menu">☰</div>
-  <div class="cat-images">
-    <img src="cat1.png" alt="Cat 1">
-    <img src="cat2.png" alt="Cat 2">
-    <img src="cat3.png" alt="Cat 3">
-  </div>
-  <button class="walk-button" onclick="location.href='walking.html'">あるく</button>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ねこあるき</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="menu">☰</div>
+    <div class="cat-images">
+      <img src="わだにゃん.png" alt="Cat 1" />
+    </div>
+    <button class="walk-button" onclick="location.href='walking.html'">
+      あるく
+    </button>
+    <h1>Firebase Google Login</h1>
+    <div id="firebaseui-auth-container"></div>
+    <div id="loader">Loading...</div>
+    <script>
+      // Firebaseの設定
+      const firebaseConfig = {
+        apiKey: "AIzaSyBLZxPyi_FRQxzyWp5GJlxOXuvAOnb4Jl0",
+        authDomain: "react-sample-app-fd3e4.firebaseapp.com",
+        projectId: "react-sample-app-fd3e4",
+        storageBucket: "react-sample-app-fd3e4.appspot.com",
+        messagingSenderId: "143405994379",
+        appId: "1:143405994379:web:cebd1410e5b8ed10b21f8e",
+        measurementId: "G-GMN8V3TLQT",
+      };
+
+      // Firebaseの初期化
+      firebase.initializeApp(firebaseConfig);
+
+      // FirebaseUIの設定
+      var uiConfig = {
+        callbacks: {
+          signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+            // サインイン成功時のコールバック
+            console.log(authResult.user);
+            return false;
+          },
+          uiShown: function () {
+            // UIの表示時にローダーを隠す
+            document.getElementById("loader").style.display = "none";
+          },
+        },
+        signInFlow: "popup",
+        signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
+        // サインイン後のリダイレクト先のURLを設定
+        tosUrl: "https://shoei03.github.io/policy/index.html",
+        privacyPolicyUrl: "https://shoei03.github.io/policy/index.html",
+      };
+
+      // FirebaseUIの初期化
+      var ui = new firebaseui.auth.AuthUI(firebase.auth());
+      ui.start("#firebaseui-auth-container", uiConfig);
+    </script>
+  </body>
 </html>
