@@ -24,6 +24,7 @@ function onDeviceMotion(e) {
       _step++;
       _isStep = false;
       updateStepCount();
+      updateGoalCount();
     }
   } else {
     // しきい値よりも大きければ歩いているとみなす
@@ -36,6 +37,11 @@ function onDeviceMotion(e) {
 function updateStepCount() {
   var stepCountElement = document.getElementById("stepCount");
   stepCountElement.textContent = _step;
+}
+
+function updateGoalCount() {
+  var goalCountElement = document.getElementById("goalCount");
+  goalCountElement.textContent = 2000  - _step;
 }
 
 initialize();
