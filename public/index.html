@@ -7,6 +7,10 @@
     <!-- <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script> -->
     <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-messaging.js"></script>
     <link rel="stylesheet" href="styles/style.css" />
+    <link
+      rel="shortcut icon"
+      href="https://www.kaigo-antenna.jp/uploads/illustration/main_image/789/202107_009_s.jpg"
+    />
   </head>
   <body>
     <header class="header">
@@ -63,13 +67,18 @@
         </div>
       </div>
     </header>
-    <div class="cat-images">
-      <img src="わだにゃん.png" alt="Cat 1" />
+    <div class="container">
+      <div class="cat-container">
+        <div class="cats">
+          <img src="わだにゃん.png" alt="Cat 1" />
+          <img src="わだにゃん.png" alt="Cat 2" />
+        </div>
+      </div>
+      <button class="button" onclick="location.href='walking.html'">
+        あるく
+      </button>
+      <div id="loader">Loading...</div>
     </div>
-    <button class="button" onclick="location.href='walking.html'">
-      あるく
-    </button>
-    <div id="loader">Loading...</div>
     <script type="module" src="scripts/auth.js"></script>
     <script src="scripts/hamburger.js"></script>
   </body>
