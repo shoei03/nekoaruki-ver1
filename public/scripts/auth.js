@@ -1,37 +1,48 @@
-// Import the functions you need from the SDKs you need
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+// scripts/auth.js
 
-const provider = new GoogleAuthProvider();
+// FirebaseUI の設定
+var uiConfig = {
+  callbacks: {
+    signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+      console.log(authResult.user);
+      return false;
+    },
+    uiShown: function () {
+      document.getElementById("loader").style.display = "none";
+    },
+  },
+  signInFlow: "redirect", // "popup" から "redirect" へ変更
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+  ],
+  tosUrl: "https://shoei03.github.io/policy/index.html",
+  privacyPolicyUrl: "https://shoei03.github.io/policy/index.html",
+};
 
-const auth = getAuth();
+// FirebaseUI の初期化
+var ui = new firebaseui.auth.AuthUI(firebase.auth());
+ui.start("#firebaseui-auth-container", uiConfig);
 
-signInWithPopup(auth, provider)
-  .then((result) => {
-    // This gives you a Google Access Token. You can use it to access the Google API.
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential.accessToken;
-    // The signed-in user info.
-    const user = result.user;
-    // IdP data available using getAdditionalUserInfo(result)
-    // ...
-  }).catch((error) => {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // The email of the user's account used.
-    const email = error.customData.email;
-    // The AuthCredential type that was used.
-    const credential = GoogleAuthProvider.credentialFromError(error);
-    // ...
-  });
-
-// Firebaseの設定
-// const firebaseConfig = {
-//   apiKey: "AIzaSyBLZxPyi_FRQxzyWp5GJlxOXuvAOnb4Jl0",
-//   authDomain: "react-sample-app-fd3e4.firebaseapp.com",
-//   projectId: "react-sample-app-fd3e4",
-//   storageBucket: "react-sample-app-fd3e4.appspot.com",
-//   messagingSenderId: "143405994379",
-//   appId: "1:143405994379:web:cebd1410e5b8ed10b21f8e",
-//   measurementId: "G-GMN8V3TLQT",
-// };
+// 認証状態の監視
+firebase.auth().onAuthStateChanged(function(user) {
+  const authButton = document.getElementById('auth-button');
+  if (authButton) {
+    if (user) {
+      authButton.textContent = 'ログアウト';
+      authButton.onclick = function() {
+        firebase.auth().signOut().then(() => {
+          console.log('User signed out.');
+        }).catch((error) => {
+          console.error('Sign Out Error', error);
+        });
+      };
+    } else {
+      authButton.textContent = 'ログイン';
+      authButton.onclick = function() {
+        ui.start('#firebaseui-auth-container', uiConfig);
+      };
+    }
+  } else {
+    console.error('auth-button element not found');
+  }
+});

@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ねこあるき</title>
     <!-- <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script> -->
-    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-messaging.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-messaging.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"
+    />
     <link rel="stylesheet" href="styles/style.css" />
     <link
       rel="shortcut icon"
@@ -30,25 +38,14 @@
           <nav id="js-global-navigation" class="global-navigation">
             <ul class="global-navigation__list">
               <li>
-                <a href="#" class="global-navigation__link"> ログイン </a>
-              </li>
-              <li>
-                <a href="#" class="global-navigation__link"> 通知日時の設定 </a>
-              </li>
-              <li>
-                <a href="#" class="global-navigation__link"> 目標歩数の設定 </a>
-              </li>
-              <li>
-                <a href="#" class="global-navigation__link"> コレクション </a>
-              </li>
-              <li>
                 <button
                   type="button"
                   class="global-navigation__link -accordion js-sp-accordion-trigger"
+                  id="auth-button"
                   aria-expanded="false"
                   aria-controls="accordion1"
                 >
-                  親メニュー
+                  ログイン
                 </button>
                 <div id="accordion1" class="accordion js-accordion">
                   <ul class="accordion__list">
@@ -58,8 +55,19 @@
                     <li>
                       <a href="#" class="accordion__link"> 子メニュー </a>
                     </li>
+                    <div id="firebaseui-auth-container"></div>
+                    <div id="loader">Loading...</div>
                   </ul>
                 </div>
+              </li>
+              <li>
+                <a href="#" class="global-navigation__link"> 通知日時の設定 </a>
+              </li>
+              <li>
+                <a href="#" class="global-navigation__link"> 目標歩数の設定 </a>
+              </li>
+              <li>
+                <a href="#" class="global-navigation__link"> コレクション </a>
               </li>
             </ul>
             <div id="js-focus-trap" tabindex="0"></div>
@@ -77,9 +85,9 @@
       <button class="button" onclick="location.href='walking.html'">
         あるく
       </button>
-      <div id="loader">Loading...</div>
     </div>
-    <script type="module" src="scripts/auth.js"></script>
+    <script src="scripts/firebase-init.js"></script>
+    <script src="scripts/auth.js"></script>
     <script src="scripts/hamburger.js"></script>
   </body>
 </html>
