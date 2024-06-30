@@ -42,7 +42,7 @@ body {
 .filtered-cat {
   max-width: 400px;
   max-height: 400px;
-  filter: blur(10px);
+  filter: blur(20px);
 }
 
 .button-container {
