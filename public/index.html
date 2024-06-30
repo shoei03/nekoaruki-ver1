@@ -4,65 +4,73 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ねこあるき</title>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
-    <link
-      type="text/css"
-      rel="stylesheet"
-      href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"
-    />
-    <link rel="stylesheet" href="style.css" />
+    <!-- <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-messaging.js"></script>
+    <link rel="stylesheet" href="styles/style.css" />
   </head>
   <body>
-    <div class="menu">☰</div>
+    <header class="header">
+      <div class="header__inner">
+        <button
+          id="js-hamburger"
+          type="button"
+          class="hamburger"
+          aria-controls="navigation"
+          aria-expanded="false"
+          aria-label="メニューを開く"
+        >
+          <span class="hamburger__line"></span>
+          <span class="hamburger__text"></span>
+        </button>
+        <div class="header__nav-area js-nav-area" id="navigation">
+          <nav id="js-global-navigation" class="global-navigation">
+            <ul class="global-navigation__list">
+              <li>
+                <a href="#" class="global-navigation__link"> ログイン </a>
+              </li>
+              <li>
+                <a href="#" class="global-navigation__link"> 通知日時の設定 </a>
+              </li>
+              <li>
+                <a href="#" class="global-navigation__link"> 目標歩数の設定 </a>
+              </li>
+              <li>
+                <a href="#" class="global-navigation__link"> コレクション </a>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  class="global-navigation__link -accordion js-sp-accordion-trigger"
+                  aria-expanded="false"
+                  aria-controls="accordion1"
+                >
+                  親メニュー
+                </button>
+                <div id="accordion1" class="accordion js-accordion">
+                  <ul class="accordion__list">
+                    <li>
+                      <a href="#" class="accordion__link"> 子メニュー </a>
+                    </li>
+                    <li>
+                      <a href="#" class="accordion__link"> 子メニュー </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+            <div id="js-focus-trap" tabindex="0"></div>
+          </nav>
+        </div>
+      </div>
+    </header>
     <div class="cat-images">
       <img src="わだにゃん.png" alt="Cat 1" />
     </div>
-    <button class="walk-button" onclick="location.href='walking.html'">
+    <button class="button" onclick="location.href='walking.html'">
       あるく
     </button>
-    <h1>Firebase Google Login</h1>
-    <div id="firebaseui-auth-container"></div>
     <div id="loader">Loading...</div>
-    <script>
-      // Firebaseの設定
-      const firebaseConfig = {
-        apiKey: "AIzaSyBLZxPyi_FRQxzyWp5GJlxOXuvAOnb4Jl0",
-        authDomain: "react-sample-app-fd3e4.firebaseapp.com",
-        projectId: "react-sample-app-fd3e4",
-        storageBucket: "react-sample-app-fd3e4.appspot.com",
-        messagingSenderId: "143405994379",
-        appId: "1:143405994379:web:cebd1410e5b8ed10b21f8e",
-        measurementId: "G-GMN8V3TLQT",
-      };
-
-      // Firebaseの初期化
-      firebase.initializeApp(firebaseConfig);
-
-      // FirebaseUIの設定
-      var uiConfig = {
-        callbacks: {
-          signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-            // サインイン成功時のコールバック
-            console.log(authResult.user);
-            return false;
-          },
-          uiShown: function () {
-            // UIの表示時にローダーを隠す
-            document.getElementById("loader").style.display = "none";
-          },
-        },
-        signInFlow: "popup",
-        signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
-        // サインイン後のリダイレクト先のURLを設定
-        tosUrl: "https://shoei03.github.io/policy/index.html",
-        privacyPolicyUrl: "https://shoei03.github.io/policy/index.html",
-      };
-
-      // FirebaseUIの初期化
-      var ui = new firebaseui.auth.AuthUI(firebase.auth());
-      ui.start("#firebaseui-auth-container", uiConfig);
-    </script>
+    <script type="module" src="scripts/auth.js"></script>
+    <script src="scripts/hamburger.js"></script>
   </body>
 </html>
