@@ -1,6 +1,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  height: 100vh;
 }
 
 .container {
@@ -69,7 +70,7 @@ body {
 }
 
 .cat-container {
-  min-height: 70vh;
+  min-height: 60vh;
 }
 
 .cats > img {
