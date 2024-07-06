@@ -5,6 +5,7 @@ var uiConfig = {
   callbacks: {
     signInSuccessWithAuthResult: function (authResult, redirectUrl) {
       console.log(authResult.user);
+      displayUserInfo(authResult.user);  // ユーザー情報を表示
       return false;
     },
     uiShown: function () {
