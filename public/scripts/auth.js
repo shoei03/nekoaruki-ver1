@@ -14,6 +14,7 @@ var uiConfig = {
   signInFlow: "redirect", // "popup" から "redirect" へ変更
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    firebase.auth.EmailAuthProvider.PROVIDER_ID,
   ],
   tosUrl: "https://shoei03.github.io/policy/index.html",
   privacyPolicyUrl: "https://shoei03.github.io/policy/index.html",
