@@ -5,6 +5,10 @@ var GRAVITY_MAX = 12.0;
 var _step = 0;
 // 現在歩いているかどうか
 var _isStep = false;
+// ねこを表示する目標歩数を取得
+var firstGoal;
+// ねこをコレクションできる目標歩数を取得
+var secondGoal;
 
 function initialize() {
   // デバイスの加速度センサーの情報を取得します
@@ -39,9 +43,49 @@ function updateStepCount() {
   stepCountElement.textContent = _step;
 }
 
-function updateGoalCount() {
-  var goalCountElement = document.getElementById("goalCount");
-  goalCountElement.textContent = 2000  - _step;
+// Firestoreの参照を取得
+const db = firebase.firestore();
+
+console.log('walking-database.js is loaded');
+
+// 歩数を取得する関数
+function loadSteps() {
+    return db.collection('goals').doc('userGoals').get()
+    .then((doc) => {
+        if (doc.exists) {
+            const steps = doc.data();
+            document.getElementById('goalCount').textContent = steps.firstGoal;
+            firstGoal = steps.firstGoal;
+            secondGoal = steps.secondGoal;
+            console.log('ユーザーデータが取得されました:', steps);
+        } else {
+            console.log('ユーザーデータが存在しません');
+        }
+    })
+    .catch((error) => {
+        console.error('歩数の取得中にエラーが発生しました:', error);
+    });
 }
+
+
+const goalCountElement = document.getElementById("goalCount");
+const goalCountMse = document.getElementById("goal-message");
+const filteredCat = document.getElementsByClassName("filtered-cat");
+if (firstGoal <= _step) {
+  goalCountMse.textContent = "歩でねこをコレクションできるよ～";
+  filteredCat.style.filter = 'blur(0)';
+  function updateGoalCount() {
+    goalCountElement.textContent = secondGoal - _step;
+    return;
+  }
+} else {
+  function updateGoalCount() {
+    goalCountElement.textContent = firstGoal  - _step;
+    return;
+  }
+}
+
+// DOMの読み込みが完了したら、loadSteps関数を呼び出す
+document.addEventListener('DOMContentLoaded', loadSteps);
 
 initialize();

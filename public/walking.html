@@ -19,13 +19,16 @@
         <div class="distance">
           <span id="stepCount">0</span><span class="unit">歩</span>
         </div>
-        <div class="message">あと<span id="goalCount">2000</span>歩で猫がみられるよ〜</div>
+        <div class="message">
+          あと<span id="goalCount"></span><span id="goal-message">歩で猫がみられるよ〜</span>
+        </div>
       </div>
       <div class="">
         <img
           src="https://www.kaigo-antenna.jp/uploads/illustration/main_image/789/202107_009_s.jpg"
           alt="Cat"
-          class="filtered-cat";
+          class="filtered-cat"
+          ;
         />
       </div>
     </div>
@@ -42,10 +45,8 @@
     <script src="//code.jquery.com/jquery-3.6.1.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/push.js/1.0.12/push.min.js"></script>
     <script src="scripts/notification.js"></script>
-    <!-- 歩数計 -->
-    <script src="scripts/pedometer.js"></script>
     <!-- データベース機能 -->
     <script src="scripts/firebase-init.js"></script>
-    <script src="scripts/db-get-goalsteps.js"></script>
+    <script src="scripts/pedometer.js"></script>
   </body>
 </html>
