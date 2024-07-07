@@ -3,8 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>コレクション</title>
+    <title>ねこのコレクション</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <link rel="stylesheet" href="styles/setting.css" />
+    <link
+      rel="shortcut icon"
+      href="https://www.kaigo-antenna.jp/uploads/illustration/main_image/789/202107_009_s.jpg"
+    />
   </head>
   <body>
     <div class="setting-container">
@@ -60,6 +67,7 @@
         <!-- Add more days as needed -->
       </div>
     </div>
-    <script src="scripts/collection.js"></script>
+    <script src="scripts/firebase-init.js"></script>
+    <script src="scripts/goal-database.js"></script>
   </body>
 </html>

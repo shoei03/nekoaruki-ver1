@@ -2,15 +2,16 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>歩行中</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <link rel="stylesheet" href="styles/style.css" />
     <link
       rel="shortcut icon"
       href="https://www.kaigo-antenna.jp/uploads/illustration/main_image/789/202107_009_s.jpg"
     />
-    <title>ねこあるき</title>
-    <link rel="stylesheet" href="styles/style.css" />
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
   </head>
   <body>
     <div class="container">
@@ -45,6 +46,6 @@
     <script src="scripts/pedometer.js"></script>
     <!-- データベース機能 -->
     <script src="scripts/firebase-init.js"></script>
-    <script src="scripts/walking-database.js"></script>
+    <script src="scripts/db-get-goalsteps.js"></script>
   </body>
 </html>
