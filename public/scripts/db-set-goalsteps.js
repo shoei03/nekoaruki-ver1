@@ -1,30 +1,27 @@
-// Firestoreの参照を取得
-const db = firebase.firestore();
-
-console.log('goal-database.js is loaded');
+import { db } from "./firebase-config.js";
+import { doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 
 // 目標を保存する関数
-function saveGoal(firstGoal, secondGoal) {
+async function saveGoal(firstGoal, secondGoal) {
     console.log('Attempting to save goals');
-    return db.collection('goals').doc('userGoals').set({
-        firstGoal: firstGoal,
-        secondGoal: secondGoal
-    })
-    .then(() => {
+    try {
+        await setDoc(doc(db, 'goals', 'userGoals'), {
+            firstGoal: firstGoal,
+            secondGoal: secondGoal
+        });
         console.log('目標が正常に保存されました');
-    })
-    .catch((error) => {
+    } catch (error) {
         console.error('目標の保存中にエラーが発生しました:', error);
         throw error;
-    });
+    }
 }
 
 // 既存の目標歩数を読み込む関数
-function loadExistingGoalSteps() {
-    return db.collection('goals').doc('userGoals').get()
-    .then((doc) => {
-        if (doc.exists) {
-            const goals = doc.data();
+async function loadExistingGoalSteps() {
+    try {
+        const docSnap = await getDoc(doc(db, 'goals', 'userGoals'));
+        if (docSnap.exists()) {
+            const goals = docSnap.data();
             document.querySelectorAll('.goal-steps').forEach((element, index) => {
                 if (index === 0) {
                     element.textContent = goals.firstGoal + '歩';
@@ -37,10 +34,9 @@ function loadExistingGoalSteps() {
         } else {
             console.log('目標データが存在しません');
         }
-    })
-    .catch((error) => {
+    } catch (error) {
         console.error('目標歩数の取得中にエラーが発生しました:', error);
-    });
+    }
 }
 
 // 目標歩数を編集可能にする関数
@@ -50,7 +46,7 @@ function makeEditable(element) {
     const input = element.querySelector('input');
     input.focus();
 
-    input.addEventListener('blur', () => {
+    input.addEventListener('blur', async () => {
         const newValue = input.value;
         element.textContent = newValue + '歩';
         element.dataset.value = newValue;
@@ -60,7 +56,7 @@ function makeEditable(element) {
             firstGoal: parseInt(document.querySelectorAll('.goal-steps')[0].dataset.value),
             secondGoal: parseInt(document.querySelectorAll('.goal-steps')[1].dataset.value)
         };
-        saveGoal(goals.firstGoal, goals.secondGoal);
+        await saveGoal(goals.firstGoal, goals.secondGoal);
     });
 }
 

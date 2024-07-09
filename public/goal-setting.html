@@ -4,9 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>目標歩数の設定</title>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <link rel="stylesheet" href="styles/setting.css" />
     <link
       rel="shortcut icon"
@@ -40,7 +37,11 @@
         </div>
       </div>
     </div>
-    <script src="scripts/firebase-init.js"></script>
-    <script src="scripts/db-set-goalsteps.js"></script>
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
+    <!-- Add Firebase products that you want to use -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js"></script>
+    <script type="module" src="scripts/firebase-config.js"></script>
+    <script type="module" src="scripts/db-set-goalsteps.js"></script>
   </body>
 </html>
