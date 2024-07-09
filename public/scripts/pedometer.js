@@ -1,14 +1,22 @@
+import { db } from "./firebase-config.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+
 // 重力加速度のしきい値
-var GRAVITY_MIN = 9.8;
-var GRAVITY_MAX = 12.0;
+const GRAVITY_MIN = 9.8;
+const GRAVITY_MAX = 12.0;
 // 歩数
-var _step = 0;
+let _step = 0;
 // 現在歩いているかどうか
-var _isStep = false;
+let _isStep = false;
 // ねこを表示する目標歩数を取得
-var firstGoal;
+let firstGoal;
 // ねこをコレクションできる目標歩数を取得
-var secondGoal;
+let secondGoal;
+
+// DOM要素
+const goalCountElement = document.getElementById("goalCount");
+const goalMessageElement = document.getElementById("goal-message");
+const filteredCat = document.querySelector(".filtered-cat");
 
 function initialize() {
   // デバイスの加速度センサーの情報を取得します
@@ -18,9 +26,9 @@ function initialize() {
 function onDeviceMotion(e) {
   e.preventDefault();
   // 重力加速度を取得
-  var ag = e.accelerationIncludingGravity;
+  const ag = e.accelerationIncludingGravity;
   // 重力加速度ベクトルの大きさを取得
-  var acc = Math.sqrt(ag.x * ag.x + ag.y * ag.y + ag.z * ag.z);
+  const acc = Math.sqrt(ag.x * ag.x + ag.y * ag.y + ag.z * ag.z);
 
   if (_isStep) {
     // 歩行中にしきい値よりも低ければ一歩とみなす
@@ -39,49 +47,35 @@ function onDeviceMotion(e) {
 }
 
 function updateStepCount() {
-  var stepCountElement = document.getElementById("stepCount");
+  const stepCountElement = document.getElementById("stepCount");
   stepCountElement.textContent = _step;
 }
 
-// Firestoreの参照を取得
-const db = firebase.firestore();
+async function loadSteps() {
+  try {
+    const docRef = doc(db, 'goals', 'userGoals');
+    const docSnap = await getDoc(docRef);
 
-console.log('walking-database.js is loaded');
-
-// 歩数を取得する関数
-function loadSteps() {
-    return db.collection('goals').doc('userGoals').get()
-    .then((doc) => {
-        if (doc.exists) {
-            const steps = doc.data();
-            document.getElementById('goalCount').textContent = steps.firstGoal;
-            firstGoal = steps.firstGoal;
-            secondGoal = steps.secondGoal;
-            console.log('ユーザーデータが取得されました:', steps);
-        } else {
-            console.log('ユーザーデータが存在しません');
-        }
-    })
-    .catch((error) => {
-        console.error('歩数の取得中にエラーが発生しました:', error);
-    });
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      firstGoal = data.firstGoal;
+      secondGoal = data.secondGoal;
+      updateGoalCount();
+      console.log('ユーザーデータが取得されました:', data);
+    } else {
+      console.log('ユーザーデータが存在しません');
+    }
+  } catch (error) {
+    console.error('歩数の取得中にエラーが発生しました:', error);
+  }
 }
 
-
-const goalCountElement = document.getElementById("goalCount");
-const goalCountMse = document.getElementById("goal-message");
-const filteredCat = document.getElementsByClassName("filtered-cat");
-if (firstGoal <= _step) {
-  goalCountMse.textContent = "歩でねこをコレクションできるよ～";
-  filteredCat.style.filter = 'blur(0)';
-  function updateGoalCount() {
-    goalCountElement.textContent = secondGoal - _step;
-    return;
-  }
-} else {
-  function updateGoalCount() {
-    goalCountElement.textContent = firstGoal  - _step;
-    return;
+function updateGoalCount() {
+  if (_step >= firstGoal) {
+    goalMessageElement.textContent = "歩でねこをコレクションできるよ～";
+    filteredCat.style.filter = 'blur(0)';
+  } else {
+    goalCountElement.textContent = firstGoal - _step;
   }
 }
 
