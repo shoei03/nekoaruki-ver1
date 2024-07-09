@@ -1,50 +1,54 @@
-// scripts/auth.js
+import { onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
+import { auth } from "./firebase-config.js";
 
-// FirebaseUI の設定
-var uiConfig = {
-  callbacks: {
-    signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-      console.log(authResult.user);
-      displayUserInfo(authResult.user);  // ユーザー情報を表示
-      return false;
-    },
-    uiShown: function () {
-      document.getElementById("loader").style.display = "none";
-    },
-  },
-  signInFlow: "redirect", // "popup" から "redirect" へ変更
-  signInOptions: [
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    firebase.auth.EmailAuthProvider.PROVIDER_ID,
-  ],
-  tosUrl: "https://shoei03.github.io/policy/index.html",
-  privacyPolicyUrl: "https://shoei03.github.io/policy/index.html",
-};
+// ログイン機能
+const authButton = document.getElementById('login-button');
+authButton.addEventListener('click', () => {
+  var email = document.getElementById("email").value;
+  var password = document.getElementById("password").value;
 
-// FirebaseUI の初期化
-var ui = new firebaseui.auth.AuthUI(firebase.auth());
-ui.start("#firebaseui-auth-container", uiConfig);
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // ログイン成功
+      console.log("ログイン成功!");
+      window.location.href = "index.html";
+    })
+    .catch((error) => {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // ログイン失敗時のエラー処理
+      alert("エラー: " + errorMessage);
+    });
+});
 
-// 認証状態の監視
-firebase.auth().onAuthStateChanged(function(user) {
-  const authButton = document.getElementById('auth-button');
-  if (authButton) {
+// ログアウト機能
+const logoutButton = document.getElementById('logout-button');
+logoutButton.addEventListener('click', () => {
+  signOut(auth).then(() => {
+    // ログアウト成功
+    console.log("ログアウトしました");
+    window.location.href = "login.html"; // ログインページにリダイレクト
+  }).catch((error) => {
+    // エラー処理
+    console.error("ログアウトエラー", error);
+  });
+});
+
+// ユーザーのログイン状態の監視
+document.addEventListener('DOMContentLoaded', () => {
+  onAuthStateChanged(auth, (user) => {
     if (user) {
-      authButton.textContent = 'ログアウト';
-      authButton.onclick = function() {
-        firebase.auth().signOut().then(() => {
-          console.log('User signed out.');
-        }).catch((error) => {
-          console.error('Sign Out Error', error);
-        });
-      };
+      // ユーザーがログインしている場合の処理
+      console.log("ユーザーがログインしています:", user.email);
+      // ここにログインしているユーザーのためのコードを追加できます。
+      // 例えば、ログイン後のリダイレクトや、特定のUIの表示切替えなど。
+      logoutButton.style.display = 'block'; // ログアウトボタンを表示
     } else {
-      authButton.textContent = 'ログイン';
-      authButton.onclick = function() {
-        ui.start('#firebaseui-auth-container', uiConfig);
-      };
+      // ユーザーがログアウトしている場合の処理
+      console.log("ユーザーがログアウトしています。");
+      // ここにログアウトしているユーザーのためのコードを追加できます。
+      // 例えば、ログインページへのリダイレクトや、ログインを促すUIの表示など。
+      logoutButton.style.display = 'none'; // ログアウトボタンを非表示
     }
-  } else {
-    console.error('auth-button element not found');
-  }
+  });
 });
