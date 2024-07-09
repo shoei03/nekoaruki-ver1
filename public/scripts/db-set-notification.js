@@ -1,49 +1,44 @@
-// Firestoreの参照を取得
-const db = firebase.firestore();
-
-console.log('database.js is loaded');
+import { db } from "./firebase-config.js";
+import { getFirestore, collection, doc, setDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 
 // 通知時間設定を保存する関数
-function saveNotificationTime(startTime, endTime, id) {
-  console.log('Attempting to save notification time');
-  return db.collection('notificationSettings').doc(id).set({
-    startTime: startTime,
-    endTime: endTime
-  })
-  .then(() => {
+async function saveNotificationTime(startTime, endTime, id) {
+  try {
+    console.log('Attempting to save notification time');
+    await setDoc(doc(db, 'notificationSettings', id), {
+      startTime: startTime,
+      endTime: endTime
+    });
     console.log(`通知時間 (ID: ${id}) が正常に保存されました`);
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error(`通知時間 (ID: ${id}) の保存中にエラーが発生しました:`, error);
-    throw error; // エラーを再スローして呼び出し元で処理できるようにする
-  });
+    throw error;
+  }
 }
 
 // 通知時間設定を削除する関数
-function deleteNotificationTime(id) {
-  return db.collection('notificationSettings').doc(id).delete()
-    .then(() => {
-      console.log(`通知時間 (ID: ${id}) が正常に削除されました`);
-    })
-    .catch((error) => {
-      console.error(`通知時間 (ID: ${id}) の削除中にエラーが発生しました:`, error);
-      throw error;
-    });
+async function deleteNotificationTime(id) {
+  try {
+    await deleteDoc(doc(db, 'notificationSettings', id));
+    console.log(`通知時間 (ID: ${id}) が正常に削除されました`);
+  } catch (error) {
+    console.error(`通知時間 (ID: ${id}) の削除中にエラーが発生しました:`, error);
+    throw error;
+  }
 }
 
 // 全ての通知時間設定を取得する関数
-function getAllNotificationTimes() {
-  return db.collection('notificationSettings').get()
-    .then((querySnapshot) => {
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-    })
-    .catch((error) => {
-      console.error('通知時間の取得中にエラーが発生しました:', error);
-      throw error;
-    });
+async function getAllNotificationTimes() {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'notificationSettings'));
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error('通知時間の取得中にエラーが発生しました:', error);
+    throw error;
+  }
 }
 
 // 通知時間設定のカードを作成する関数
