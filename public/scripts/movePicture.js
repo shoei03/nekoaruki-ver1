@@ -30,19 +30,25 @@ document.addEventListener('DOMContentLoaded', function() {
     catImage.style.cursor = 'grab';
   };
 
-  // 画像を左端から200px右に動かす
+  // 画像を左端から動かす
   catImage.animate(
     // 途中の状態を表す配列
     [
-      { transform: 'translateX(0)'}, // 開始時の状態（左端）
-      { transform: 'translateX(200px)' }, // 終了時の状態（左端から200pxの位置）
-      { transform: 'translateY(0)'}, // 開始時の状態（左端）
-      { transform: 'translateY(-200px)' } // 終了時の状態（左端から200pxの位置）
+      { transform: 'translateX(0)', offset: 0}, // 開始時の状態
+      { transform: 'translateX(200px)', offset: 0.1},
+      { transform: 'translateX(200px)', offset: 0.2},
+      { transform: 'translateY(-200px)', offset: 0.3},
+      { transform: 'translateY(-200px)', offset: 0.4},
+      { transform: 'translateX(-200px)', offset: 0.5},
+      { transform: 'translateX(-200px)', offset: 0.6},
+      { transform: 'translateY(200px)', offset: 0.7},
+      { transform: 'translateY(200px)', offset: 0.8},
+      { transform: 'translateY(0px)', offset: 0.9} // 終了時の状態
     ], 
     // タイミングに関する設定
     {
       fill: 'backwards', // 再生前後の状態（再生前、開始時の状態を適用）
-      duration: 15000, // 再生時間（1000ミリ秒）
+      duration: 50000, // 再生時間（ミリ秒）
       iterations: Infinity,  // アニメーションの繰り返し回数（ずっと繰り返す）
     },
   );
