@@ -3,22 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>通知時間設定</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
-      crossorigin="anonymous"
-    />
+    <title>通知日時の設定</title>
     <link rel="stylesheet" href="styles/setting.css" />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link
+      rel="shortcut icon"
+      href="https://www.kaigo-antenna.jp/uploads/illustration/main_image/789/202107_009_s.jpg"
+    />
+    <!-- なくてもいいかも -->
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.12/push.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> -->
   </head>
   <body>
     <div class="setting-container">
@@ -28,48 +22,17 @@
         </a>
         <h2>通知時間</h2>
       </div>
-      <div class="card">
-        <div class="card-content">
-          <div class="notification-time">
-            <span class="start-time" value="6:00"></span>
-            <span>～</span>
-            <span class="end-time" value="8:00"></span>
-          </div>
-          <div class="days">
-            <span class="day">日</span>
-            <span class="day">月</span>
-            <span class="day">火</span>
-            <span class="day">水</span>
-            <span class="day">木</span>
-            <span class="day">金</span>
-            <span class="day">土</span>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-content">
-          <div class="notification-time">
-            <span class="start-time" value="16:00"></span>
-            <span>～</span>
-            <span class="end-time" value="21:00"></span>
-          </div>
-          <div class="days">
-            <span class="day">日</span>
-            <span class="day">月</span>
-            <span class="day">火</span>
-            <span class="day">水</span>
-            <span class="day">木</span>
-            <span class="day">金</span>
-            <span class="day">土</span>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="button-container">
       <button class="add-button">
         <img src="src/add.png" alt="">
       </button>
     </div>
-    <script src="scripts/notification-setting.js"></script>
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
+    <!-- Add Firebase products that you want to use -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js"></script>
+    <script type="module" src="scripts/firebase-config.js"></script>
+    <script type="module" src="scripts/db-set-notification.js"></script>
   </body>
 </html>
