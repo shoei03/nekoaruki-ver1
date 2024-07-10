@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var startX, startY, initialX, initialY;
 
   var touchStartHandler = function(e) {
-    if (e.touches.length === 1) { // シングルタッチのみを処理
+    if (e.touches.length === 1) { // シングルタッチのみを処理お
       isDragging = true;
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
