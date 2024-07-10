@@ -1,3 +1,9 @@
+#movableCat {
+  position: absolute;
+  touch-action: none; /* タッチ操作を無効にして画像を自由に動かせるようにする */
+  cursor: grab; /* 画像を掴むためのカーソル表示 */
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -82,7 +88,20 @@ body {
   min-height: 60vh;
 }
 
+.picture-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
 .cats > img {
+  max-width: 100px;
+  max-height: 100px;
+}
+
+.picture > img {
   max-width: 100px;
   max-height: 100px;
 }
