@@ -20,9 +20,10 @@
           あと<span id="goalCount"></span><span id="goal-message">歩で猫がみられるよ〜</span>
         </div>
       </div>
-      <div class="">
+      <div class="todays-cat">
+        <!-- ここを動的に追加する -->
         <img
-          src="https://www.kaigo-antenna.jp/uploads/illustration/main_image/789/202107_009_s.jpg"
+
           alt="Cat"
           class="filtered-cat"
           ;
@@ -37,12 +38,13 @@
     </div>
 
     <!-- Service Worker登録 -->
-    <script src="scripts/registerServiceWorker.js"></script>
+    <!-- <script src="scripts/registerServiceWorker.js"></script> -->
     <!-- 通知機能 -->
-    <script src="//code.jquery.com/jquery-3.6.1.min.js"></script>
+    <!-- <script src="//code.jquery.com/jquery-3.6.1.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/push.js/1.0.12/push.min.js"></script>
-    <script src="scripts/notification.js"></script>
+    <script src="scripts/notification.js"></script> -->
     <!-- データベース機能 -->
+     <script src="scripts/displayTodaysCat.js"></script>
     <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
     <script type="module" src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
     <!-- Add Firebase products that you want to use -->
