@@ -1,11 +1,11 @@
 import { db } from "./firebase-config.js";
 import { getFirestore, collection, doc, setDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 
-const saveNotificationTime = async (startTime, endTime, id) => {
+const saveNotificationTime = async (startTime, endTime, days, id) => {
   try {
-    console.log('Attempting to save notification time');
-    await setDoc(doc(db, 'notificationSettings', id), { startTime, endTime });
-    console.log(`通知時間 (ID: ${id}) が正常に保存されました`);
+    console.log('Attempting to save notification time with days');
+    await setDoc(doc(db, 'notificationSettings', id), { startTime, endTime, days });
+    console.log(`通知時間 (ID: ${id}) が正常に保存されました、曜日: ${days}`);
   } catch (error) {
     console.error(`通知時間 (ID: ${id}) の保存中にエラーが発生しました:`, error);
     throw error;
@@ -32,7 +32,7 @@ const getAllNotificationTimes = async () => {
   }
 };
 
-const createNotificationTimeCard = (id, startTime, endTime) => {
+const createNotificationTimeCard = (id, startTime, endTime, days = []) => {
   const card = document.createElement('div');
   card.className = 'card notification-time-card';
   card.innerHTML = `
@@ -43,13 +43,14 @@ const createNotificationTimeCard = (id, startTime, endTime) => {
         <input type="time" name="end-time" value="${endTime}">
       </div>
       <div class="days">
-        <span class="date">日</span>
-        <span class="date">月</span>
-        <span class="date">火</span>
-        <span class="date">水</span>
-        <span class="date">木</span>
-        <span class="date">金</span>
-        <span class="date">土</span>
+        <span class="date ${days.includes('日') ? 'selected' : ''}">日</span>
+        <span class="date ${days.includes('月') ? 'selected' : ''}">月</span>
+        <span class="date ${days.includes('火') ? 'selected' : ''}">火</span>
+        <span class="date ${days.includes('水') ? 'selected' : ''}">水</span>
+        <span class="date ${days.includes('木') ? 'selected' : ''}">木</span>
+        <span class="date ${days.includes('金') ? 'selected' : ''}">金</span>
+        <span class="date ${days.includes('土') ? 'selected' : ''}">土</span>
+      </div>
       </div>
       <img src="src/delete.png" alt="削除">
       <button class="delete-button">削除</button>
@@ -61,23 +62,28 @@ const createNotificationTimeCard = (id, startTime, endTime) => {
   const deleteButton = card.querySelector('.delete-button');
   const dateElements = card.querySelectorAll('.date');
 
-  startTimeInput.addEventListener('change', () => handleTimeChange(id, startTimeInput, endTimeInput));
-  endTimeInput.addEventListener('change', () => handleTimeChange(id, startTimeInput, endTimeInput));
+  startTimeInput.addEventListener('change', () => handleTimeChange(id, startTimeInput, endTimeInput, getSelectedDays()));
+  endTimeInput.addEventListener('change', () => handleTimeChange(id, startTimeInput, endTimeInput, getSelectedDays()));
   deleteButton.addEventListener('click', () => handleDelete(id, card));
   dateElements.forEach(dateElement => {
     dateElement.addEventListener('click', () => dateElement.classList.toggle('selected'));
   });
 
+  // 選択された曜日を取得する関数
+  const getSelectedDays = () => {
+    return Array.from(dateElements).filter(element => element.classList.contains('selected')).map(element => element.textContent);
+  };
+
   return card;
 };
 
-const handleTimeChange = async (id, startTimeInput, endTimeInput) => {
+const handleTimeChange = async (id, startTimeInput, endTimeInput, selectedDays) => {
   const startTime = startTimeInput.value;
   const endTime = endTimeInput.value;
 
-  if (startTime && endTime) {
+  if (startTime && endTime && selectedDays.length > 0) {
     try {
-      await saveNotificationTime(startTime, endTime, id);
+      await saveNotificationTime(startTime, endTime, selectedDays, id);
     } catch (error) {
       console.error('通知時間の保存に失敗しました:', error);
     }
@@ -111,7 +117,8 @@ const loadExistingNotificationTimes = async () => {
   try {
     const times = await getAllNotificationTimes();
     times.forEach(time => {
-      const card = createNotificationTimeCard(time.id, time.startTime, time.endTime);
+      // 曜日の情報も引数として渡す
+      const card = createNotificationTimeCard(time.id, time.startTime, time.endTime, time.days);
       document.querySelector('.setting-container').appendChild(card);
     });
   } catch (error) {
