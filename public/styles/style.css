@@ -5,21 +5,26 @@
 }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  height: 95vh;
+  font-family:
+    'Noto Sans JP',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  margin: 0 5%;
+  height: 100vh;
 }
 
 .container {
-  text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  height: 100%;
 }
 
 .progress-circle {
-  background-color: #ffdd99;
+  background-color: var(--bs-green);
+  color: var(--bs-white);
   border-radius: 50%;
   width: 300px;
   height: 300px;
@@ -27,53 +32,37 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 25px auto;
+  margin: 5% auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .distance {
-  font-size: 36px;
+  font-size: 4rem;
   font-weight: bold;
 }
 
 .unit {
-  font-size: 18px;
+  font-size: 1rem;
 }
 
 .message {
-  font-size: 14px;
-  margin-top: 10px;
+  font-size: 1rem;
 }
 
 .filtered-cat {
-  max-width: 400px;
-  max-height: 400px;
+  max-width: 300px;
+  max-height: 300px;
   filter: blur(20px);
 }
 
-.button-container {
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  display: flex;
-}
-
 .button {
+  min-height: 56px;
   width: 80%;
-  height: 4em;
-  background-color: #f0ad4e;
+  background-color: var(--bs-green);
   border: none;
-  border-radius: 5px;
-  color: white;
-  padding: 10px 20px;
-  font-size: 18px;
+  color: var(--bs-white);
   cursor: pointer;
-  margin: 0 auto 25px auto;
   box-shadow: 0 8px 8px rgba(0, 0, 0, 0.5);
-}
-
-.button:hover {
-  background-color: #ec971f;
 }
 
 .menu {
@@ -107,10 +96,6 @@ body {
 }
 
 /* ハンバーガーボタン */
-a {
-  font-family: sans-serif;
-  text-decoration: none;
-}
 .hamburger {
   display: block;
   height: 60px;

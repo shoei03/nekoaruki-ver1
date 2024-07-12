@@ -68,8 +68,10 @@ const createNotificationTimeCard = (id, startTime, endTime, days = []) => {
         <span class="date ${days.includes('金') ? 'selected' : ''}">金</span>
         <span class="date ${days.includes('土') ? 'selected' : ''}">土</span>
       </div>
-      <img src="src/delete.png" alt="削除">
-      <button class="delete-button">削除</button>
+      <div class="delete-box">
+        <img src="src/delete.png" alt="削除" class="delete-icon">
+        <button class="btn btn-danger delete-button">削除</button>
+      </div>
     </div>
   `;
 
