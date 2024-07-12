@@ -115,14 +115,14 @@ body {
   justify-content: space-between;
 }
 
-.day {
+.date {
   font-size: 1.5rem;
   background-color: #fff;
   border-radius: 50%;
   padding: 2px 7px;
 }
 
-.day.selected {
+.date.selected {
   background-color: #8fbc8f;
   color: #fff;
 }
