@@ -1,27 +1,43 @@
 import { db } from "./firebase-config.js";
 import { getFirestore, collection, doc, setDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 
-const saveNotificationTime = async (startTime, endTime, days, id) => {
+document.addEventListener('DOMContentLoaded', () => {
+  loadExistingNotificationTimes();
+  const addButton = document.querySelector('.add-button');
+  addButton.addEventListener('click', addNewNotificationTime);
+});
+
+// データを保存し、カードを作成する関数
+const addNewNotificationTime = async () => {
+  const id = Date.now().toString();
+  const startTime = "09:00";
+  const endTime = "17:00";
+  const days = []; // 空の配列または適切な値を持つ配列
+
   try {
-    console.log('Attempting to save notification time with days');
-    await setDoc(doc(db, 'notificationSettings', id), { startTime, endTime, days });
-    console.log(`通知時間 (ID: ${id}) が正常に保存されました、曜日: ${days}`);
+    await saveNotificationTime(startTime, endTime, days, id);
+    const card = createNotificationTimeCard(id, startTime, endTime, days);
+    document.querySelector('.setting-container').appendChild(card);
   } catch (error) {
-    console.error(`通知時間 (ID: ${id}) の保存中にエラーが発生しました:`, error);
-    throw error;
+    console.error('新しい通知時間の追加に失敗しました:', error);
   }
 };
 
-const deleteNotificationTime = async (id) => {
+
+// データを読み込み、カードを作成
+const loadExistingNotificationTimes = async () => {
   try {
-    await deleteDoc(doc(db, 'notificationSettings', id));
-    console.log(`通知時間 (ID: ${id}) が正常に削除されました`);
+    const times = await getAllNotificationTimes();
+    times.forEach(time => {
+      const card = createNotificationTimeCard(time.id, time.startTime, time.endTime, time.days);
+      document.querySelector('.setting-container').appendChild(card);
+    });
   } catch (error) {
-    console.error(`通知時間 (ID: ${id}) の削除中にエラーが発生しました:`, error);
-    throw error;
+    console.error('既存の通知時間の読み込みに失敗しました:', error);
   }
 };
 
+// データを読み込む関数
 const getAllNotificationTimes = async () => {
   try {
     const querySnapshot = await getDocs(collection(db, 'notificationSettings'));
@@ -32,6 +48,7 @@ const getAllNotificationTimes = async () => {
   }
 };
 
+// カードを作成し、データを入れる
 const createNotificationTimeCard = (id, startTime, endTime, days = []) => {
   const card = document.createElement('div');
   card.className = 'card notification-time-card';
@@ -51,7 +68,6 @@ const createNotificationTimeCard = (id, startTime, endTime, days = []) => {
         <span class="date ${days.includes('金') ? 'selected' : ''}">金</span>
         <span class="date ${days.includes('土') ? 'selected' : ''}">土</span>
       </div>
-      </div>
       <img src="src/delete.png" alt="削除">
       <button class="delete-button">削除</button>
     </div>
@@ -66,8 +82,17 @@ const createNotificationTimeCard = (id, startTime, endTime, days = []) => {
   endTimeInput.addEventListener('change', () => handleTimeChange(id, startTimeInput, endTimeInput, getSelectedDays()));
   deleteButton.addEventListener('click', () => handleDelete(id, card));
   dateElements.forEach(dateElement => {
-    dateElement.addEventListener('click', () => dateElement.classList.toggle('selected'));
+    dateElement.addEventListener('click', () => {
+      dateElement.classList.toggle('selected');
+      saveData(); // 曜日が変更されたらデータを保存
+    });
   });
+
+  // 選択された曜日を取得し、データベースに保存する新しい関数
+  const saveData = async () => {
+    const selectedDays = getSelectedDays();
+    await saveNotificationTime(startTimeInput.value, endTimeInput.value, selectedDays, id);
+  };
 
   // 選択された曜日を取得する関数
   const getSelectedDays = () => {
@@ -77,6 +102,7 @@ const createNotificationTimeCard = (id, startTime, endTime, days = []) => {
   return card;
 };
 
+// 時間を更新する関数
 const handleTimeChange = async (id, startTimeInput, endTimeInput, selectedDays) => {
   const startTime = startTimeInput.value;
   const endTime = endTimeInput.value;
@@ -90,6 +116,18 @@ const handleTimeChange = async (id, startTimeInput, endTimeInput, selectedDays) 
   }
 };
 
+// 更新したデータを保存する関数
+const saveNotificationTime = async (startTime, endTime, days, id) => {
+  try {
+    await setDoc(doc(db, 'notificationSettings', id), { startTime, endTime, days });
+    console.log(`通知時間 (ID: ${id}) が正常に保存されました、曜日: ${days}`);
+  } catch (error) {
+    console.error(`通知時間 (ID: ${id}) の保存中にエラーが発生しました:`, error);
+    throw error;
+  }
+};
+
+// カードを削除する関数
 const handleDelete = async (id, card) => {
   try {
     await deleteNotificationTime(id);
@@ -99,35 +137,13 @@ const handleDelete = async (id, card) => {
   }
 };
 
-const addNewNotificationTime = async () => {
-  const id = Date.now().toString();
-  const startTime = "09:00";
-  const endTime = "17:00";
-
+// データを削除する関数
+const deleteNotificationTime = async (id) => {
   try {
-    await saveNotificationTime(startTime, endTime, id);
-    const card = createNotificationTimeCard(id, startTime, endTime);
-    document.querySelector('.setting-container').appendChild(card);
+    await deleteDoc(doc(db, 'notificationSettings', id));
+    console.log(`通知時間 (ID: ${id}) が正常に削除されました`);
   } catch (error) {
-    console.error('新しい通知時間の追加に失敗しました:', error);
+    console.error(`通知時間 (ID: ${id}) の削除中にエラーが発生しました:`, error);
+    throw error;
   }
 };
-
-const loadExistingNotificationTimes = async () => {
-  try {
-    const times = await getAllNotificationTimes();
-    times.forEach(time => {
-      // 曜日の情報も引数として渡す
-      const card = createNotificationTimeCard(time.id, time.startTime, time.endTime, time.days);
-      document.querySelector('.setting-container').appendChild(card);
-    });
-  } catch (error) {
-    console.error('既存の通知時間の読み込みに失敗しました:', error);
-  }
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-  loadExistingNotificationTimes();
-  const addButton = document.querySelector('.add-button');
-  addButton.addEventListener('click', addNewNotificationTime);
-});
