@@ -51,6 +51,7 @@ const createNotificationTimeCard = (id, startTime, endTime) => {
         <span class="date">金</span>
         <span class="date">土</span>
       </div>
+      <img src="src/delete.png" alt="削除">
       <button class="delete-button">削除</button>
     </div>
   `;
