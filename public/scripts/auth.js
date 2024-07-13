@@ -1,12 +1,33 @@
-import { onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
+import { onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
 import { auth } from "./firebase-config.js";
+
+// サインアップ機能
+const signupButton = document.getElementById('signup-button');
+if (signupButton) {
+  signupButton.addEventListener('click', async () => {
+    const email = document.getElementById("signup-email").value; // サインアップ用のメールアドレス入力フィールドのID
+    const password = document.getElementById("signup-password").value; // サインアップ用のパスワード入力フィールドのID
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // サインアップ成功
+      console.log("サインアップ成功!", userCredential.user);
+      window.location.href = "index.html"; // ホームページにリダイレクト
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // サインアップ失敗時のエラー処理
+      alert(`サインアップエラー: ${errorMessage}`);
+    }
+  });
+}
 
 // ログイン機能
 const loginButton = document.getElementById('login-button');
 if (loginButton) {
   loginButton.addEventListener('click', async () => {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = document.getElementById("signin-email").value;
+    const password = document.getElementById("signin-password").value;
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
