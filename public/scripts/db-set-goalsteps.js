@@ -42,7 +42,7 @@ async function loadExistingGoalSteps() {
 // 目標歩数を編集可能にする関数
 function makeEditable(element) {
     const currentValue = element.dataset.value;
-    element.innerHTML = `<input type="number" value="${currentValue}" min="0" step="100">`;
+    element.innerHTML = `<input type="number" value="${currentValue}" class="form-control form-control-lg" min="0" step="100">`;
     const input = element.querySelector('input');
     input.focus();
 
