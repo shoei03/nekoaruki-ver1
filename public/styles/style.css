@@ -4,6 +4,10 @@
   cursor: grab; /* 画像を掴むためのカーソル表示 */
 }
 
+html, body {
+  overflow: hidden;
+}
+
 body {
   font-family:
     'Noto Sans JP',
@@ -17,7 +21,7 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: flex-start;
   align-items: center;
   height: 100%;
 }
@@ -63,6 +67,10 @@ body {
   color: var(--bs-white);
   cursor: pointer;
   box-shadow: 0 8px 8px rgba(0, 0, 0, 0.5);
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .menu {
