@@ -1,5 +1,17 @@
-import { db } from "./firebase-config.js";
-import { getFirestore, collection, doc, setDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { auth, db } from "./firebase-config.js";
+import { collection, doc, setDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
+
+const getCurrentUserId = () => new Promise((resolve) => {
+  onAuthStateChanged(auth, (user) => {
+      if (!user) {
+          console.log('ユーザーがログインしていません。');
+          resolve(null);
+      } else {
+          resolve(user.uid);
+      }
+  });
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   loadExistingNotificationTimes();
@@ -39,9 +51,14 @@ const loadExistingNotificationTimes = async () => {
 
 // データを読み込む関数
 const getAllNotificationTimes = async () => {
+  const userId = await getCurrentUserId();
   try {
-    const querySnapshot = await getDocs(collection(db, 'notificationSettings'));
-    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const querySnapshot = await getDocs(collection(db, `users/${userId}/notificationSettings`));
+    const settings = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    settings.forEach(setting => {
+      console.log(`ID: ${setting.id}, Start Time: ${setting.startTime}, End Time: ${setting.endTime}, Days: ${setting.days.join(', ')}`);
+    });
+    return settings;
   } catch (error) {
     console.error('通知時間の取得中にエラーが発生しました:', error);
     throw error;
@@ -120,8 +137,9 @@ const handleTimeChange = async (id, startTimeInput, endTimeInput, selectedDays) 
 
 // 更新したデータを保存する関数
 const saveNotificationTime = async (startTime, endTime, days, id) => {
+  const userId = await getCurrentUserId();
   try {
-    await setDoc(doc(db, 'notificationSettings', id), { startTime, endTime, days });
+    await setDoc(doc(db, `users/${userId}/notificationSettings`, id), { startTime, endTime, days });
     console.log(`通知時間 (ID: ${id}) が正常に保存されました、曜日: ${days}`);
   } catch (error) {
     console.error(`通知時間 (ID: ${id}) の保存中にエラーが発生しました:`, error);
@@ -141,8 +159,9 @@ const handleDelete = async (id, card) => {
 
 // データを削除する関数
 const deleteNotificationTime = async (id) => {
+  const userId = await getCurrentUserId();
   try {
-    await deleteDoc(doc(db, 'notificationSettings', id));
+    await deleteDoc(doc(db, `users/${userId}/notificationSettings`, id));
     console.log(`通知時間 (ID: ${id}) が正常に削除されました`);
   } catch (error) {
     console.error(`通知時間 (ID: ${id}) の削除中にエラーが発生しました:`, error);

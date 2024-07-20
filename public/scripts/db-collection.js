@@ -1,5 +1,17 @@
-import { db } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
+
+const getCurrentUserId = () => new Promise((resolve) => {
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            console.log('ユーザーがログインしていません。');
+            resolve(null);
+        } else {
+            resolve(user.uid);
+        }
+    });
+});
 
 // カレンダーの日付要素を生成する関数
 const generateCalendarDays = (daysInMonth) => {
@@ -28,11 +40,11 @@ const fetchData = async () => {
     generateCalendarDays(daysInMonth);
 
     // Firebaseからデータを取得
-    const userDoc = await getDocs(collection(db, "cats"));
+    const userId = await getCurrentUserId();
+    const userDoc = await getDocs(collection(db, `users/${userId}/cats`));
     userDoc.forEach((doc) => {
         const data = doc.data();
         const date = doc.id; // ドキュメントIDが日付と仮定
-        const catName = data.catName;
         const catImageURL = data.catImageURL;
 
         // 日付に対応するカレンダーの要素を見つける
@@ -42,7 +54,6 @@ const fetchData = async () => {
             // 画像を追加
             const img = document.createElement("img");
             img.src = catImageURL;
-            img.alt = catName;
             img.className = "cat-icon";
             dayElement.appendChild(img);
         }
