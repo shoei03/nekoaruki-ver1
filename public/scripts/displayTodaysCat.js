@@ -1,5 +1,17 @@
-import { db } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js";
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
+
+const getCurrentUserId = () => new Promise((resolve) => {
+  onAuthStateChanged(auth, (user) => {
+      if (!user) {
+          console.log('ユーザーがログインしていません。');
+          resolve(null);
+      } else {
+          resolve(user.uid);
+      }
+  });
+});
 
 // 画像ファイルのパスを含む配列
 const catImages = [
@@ -10,7 +22,7 @@ const catImages = [
 ];
 
 // 画像をランダムに表示する
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const now = new Date();
   const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
   // 年月日を基にしたシード値を生成
@@ -27,11 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
     catImageElement.src = selectedImage;
   }
 
+  const userId = await getCurrentUserId();
   // Firestoreにデータを保存
-  const catName = "ねこ";
+  // 目標歩数を達成してから保存されるように修正する必要あり
   const catImageURL = selectedImage;
-  setDoc(doc(db, "cats", date), {
-      catName: catName,
+  setDoc(doc(db, `users/${userId}/cats`, date), {
       catImageURL: catImageURL,
   });
 });

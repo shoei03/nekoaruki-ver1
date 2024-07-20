@@ -1,4 +1,5 @@
-import { db } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 
 // 定数
@@ -23,10 +24,22 @@ function initializeApp() {
   window.addEventListener("devicemotion", handleDeviceMotion);
 }
 
+const getCurrentUserId = () => new Promise((resolve) => {
+  onAuthStateChanged(auth, (user) => {
+      if (!user) {
+          console.log('ユーザーがログインしていません。');
+          resolve(null);
+      } else {
+          resolve(user.uid);
+      }
+  });
+});
+
 // ユーザーの目標をロードする
 async function loadUserGoals() {
+  const userId = await getCurrentUserId();
   try {
-    const docRef = doc(db, 'goals', 'userGoals');
+    const docRef = doc(db, 'users', userId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
