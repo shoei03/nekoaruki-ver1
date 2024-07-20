@@ -17,7 +17,7 @@ const saveGoal = async (...goals) => {
     const userId = await getCurrentUserId();
 
     try {
-        await setDoc(doc(db, 'goals', userId), { firstGoal: goals[0], secondGoal: goals[1] });
+        await setDoc(doc(db, 'users', userId), { firstGoal: goals[0], secondGoal: goals[1] });
         console.log('目標が正常に保存されました');
     } catch (error) {
         console.error('目標の保存中にエラーが発生しました:', error);
@@ -28,7 +28,7 @@ const loadExistingGoalSteps = async () => {
     const userId = await getCurrentUserId();
 
     try {
-        const docSnap = await getDoc(doc(db, 'goals', userId));
+        const docSnap = await getDoc(doc(db, 'users', userId));
         if (!docSnap.exists()) return console.log('目標データが存在しません');
 
         const { firstGoal, secondGoal } = docSnap.data();
