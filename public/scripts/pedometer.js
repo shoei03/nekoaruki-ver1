@@ -1,6 +1,6 @@
-import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { auth, db } from "./firebase-config.js";
 
 // 定数
 const GRAVITY_MIN = 9.8;
@@ -24,16 +24,18 @@ function initializeApp() {
   window.addEventListener("devicemotion", handleDeviceMotion);
 }
 
-const getCurrentUserId = () => new Promise((resolve) => {
-  onAuthStateChanged(auth, (user) => {
-      if (!user) {
-          console.log('ユーザーがログインしていません。');
-          resolve(null);
-      } else {
-          resolve(user.uid);
-      }
-  });
-});
+const getCurrentUserId = () => {
+  return new Promise((resolve, reject) => {
+      onAuthStateChanged(auth, (user) => {
+          if (!user) {
+              reject('ユーザーがログインしていません。');
+              window.location.href = '../login.html';
+          } else {
+              resolve(user.uid);
+          }
+      })
+  })
+}
 
 // ユーザーの目標をロードする
 async function loadUserGoals() {

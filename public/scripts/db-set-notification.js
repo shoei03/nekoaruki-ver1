@@ -1,67 +1,33 @@
-import { auth, db } from "./firebase-config.js";
-import { collection, doc, setDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
+import { collection, doc, setDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { auth, db } from "./firebase-config.js";
 
-const getCurrentUserId = () => new Promise((resolve) => {
-  onAuthStateChanged(auth, (user) => {
-      if (!user) {
-          console.log('ユーザーがログインしていません。');
-          resolve(null);
-      } else {
-          resolve(user.uid);
-      }
-  });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  loadExistingNotificationTimes();
-  const addButton = document.querySelector('.add-button');
-  addButton.addEventListener('click', addNewNotificationTime);
-});
+const getCurrentUserId = () => {
+  return new Promise((resolve, reject) => {
+      onAuthStateChanged(auth, (user) => {
+          if (!user) {
+              reject('ユーザーがログインしていません。');
+              window.location.href = '../login.html';
+          } else {
+              resolve(user.uid);
+          }
+      })
+  })
+}
 
 // データを保存し、カードを作成する関数
-const addNewNotificationTime = async () => {
+const addNewNotificationTime = () => {
   const id = Date.now().toString();
   const startTime = "09:00";
   const endTime = "17:00";
   const days = []; // 空の配列または適切な値を持つ配列
 
   try {
-    await saveNotificationTime(startTime, endTime, days, id);
     const card = createNotificationTimeCard(id, startTime, endTime, days);
     document.querySelector('.setting-container').appendChild(card);
+    saveNotificationTime(startTime, endTime, days, id);
   } catch (error) {
     console.error('新しい通知時間の追加に失敗しました:', error);
-  }
-};
-
-
-// データを読み込み、カードを作成
-const loadExistingNotificationTimes = async () => {
-  try {
-    const times = await getAllNotificationTimes();
-    times.forEach(time => {
-      const card = createNotificationTimeCard(time.id, time.startTime, time.endTime, time.days);
-      document.querySelector('.setting-container').appendChild(card);
-    });
-  } catch (error) {
-    console.error('既存の通知時間の読み込みに失敗しました:', error);
-  }
-};
-
-// データを読み込む関数
-const getAllNotificationTimes = async () => {
-  const userId = await getCurrentUserId();
-  try {
-    const querySnapshot = await getDocs(collection(db, `users/${userId}/notificationSettings`));
-    const settings = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    settings.forEach(setting => {
-      console.log(`ID: ${setting.id}, Start Time: ${setting.startTime}, End Time: ${setting.endTime}, Days: ${setting.days.join(', ')}`);
-    });
-    return settings;
-  } catch (error) {
-    console.error('通知時間の取得中にエラーが発生しました:', error);
-    throw error;
   }
 };
 
@@ -168,3 +134,19 @@ const deleteNotificationTime = async (id) => {
     throw error;
   }
 };
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const userId = await getCurrentUserId();
+  // Firestoreからデータを取得
+  const settingDocs = await getDocs(collection(db, `users/${userId}/notificationSettings`));
+  const settings = settingDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  // 取得したデータを元にカードを作成
+  settings.forEach(async setting => {
+    const card = await createNotificationTimeCard(setting.id, setting.startTime, setting.endTime, setting.days);
+    document.querySelector('.setting-container').appendChild(card);
+  });
+
+  // addボタンでカードを追加可能にする
+  const addButton = document.querySelector('.add-button');
+  addButton.addEventListener('click', addNewNotificationTime);
+});

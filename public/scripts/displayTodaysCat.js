@@ -1,17 +1,19 @@
-import { auth, db } from "./firebase-config.js";
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { auth, db } from "./firebase-config.js";
 
-const getCurrentUserId = () => new Promise((resolve) => {
-  onAuthStateChanged(auth, (user) => {
-      if (!user) {
-          console.log('ユーザーがログインしていません。');
-          resolve(null);
-      } else {
-          resolve(user.uid);
-      }
-  });
-});
+const getCurrentUserId = () => {
+  return new Promise((resolve, reject) => {
+      onAuthStateChanged(auth, (user) => {
+          if (!user) {
+              reject('ユーザーがログインしていません。');
+              window.location.href = '../login.html';
+          } else {
+              resolve(user.uid);
+          }
+      })
+  })
+}
 
 // 画像ファイルのパスを含む配列
 const catImages = [
