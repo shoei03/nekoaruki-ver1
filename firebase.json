@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "site": "react-sample-app-fd3e4",
     "public": "public",
     "ignore": [
       "firebase.json",
