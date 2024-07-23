@@ -51,12 +51,9 @@ const displayCatsFromLastFourDays = async () => {
     const recentCats = await getRecentCats(userId, recentDates);
     const picture = document.querySelector(".picture");
     recentCats.forEach(cat => {
-      console.log(`Date: ${cat.date}, Cat Image URL: ${cat.catImageURL}`);
-      const catElement = document.createElement("div");
-      catElement.innerHTML = `
-        <img src="${cat.catImageURL}">
+      picture.innerHTML += `
+        <img src="${cat.catImageURL}" id="movableCat">
       `;
-      picture.appendChild(catElement);
     });
   } else {
     console.error('ユーザーIDの取得に失敗しました。');
