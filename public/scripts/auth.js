@@ -1,5 +1,6 @@
 import { onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
-import { auth } from "./firebase-config.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { auth, db } from "./firebase-config.js";
 
 // サインアップ機能
 const signupButton = document.getElementById('signup-button');
@@ -12,7 +13,12 @@ if (signupButton) {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       // サインアップ成功
       console.log("サインアップ成功!", userCredential.user);
-      window.location.href = "index.html"; // ホームページにリダイレクト
+      // 目標歩数の初期設定
+      const userId = userCredential.user.uid;
+      const goalDocs = await doc(db, 'users', userId);
+      await setDoc(goalDocs, { firstGoal: 1000, secondGoal: 3000 });
+      // ホームページにリダイレクト
+      window.location.href = "index.html";
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
