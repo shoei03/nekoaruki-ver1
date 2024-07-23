@@ -1,38 +1,54 @@
-import { db } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { auth, db } from "./firebase-config.js";
+
+const getCurrentUserId = () => {
+  return new Promise((resolve, reject) => {
+      onAuthStateChanged(auth, (user) => {
+          if (!user) {
+              reject('ユーザーがログインしていません。');
+              window.location.href = '../login.html';
+          } else {
+              resolve(user.uid);
+          }
+      })
+  })
+}
 
 // 画像ファイルのパスを含む配列
 const catImages = [
-  'src/nekorobi_neko_1.png',
   'src/わだにゃん.png',
-  'src/cat_8.png',
+  'src/nekorobi_neko_1.png',
+  'src/nekoaruki_haiiro1.png',
+  'src/nekoaruki_haiiro3.png',
+  'src/nekoaruki_haiiro4.png',
+  'src/nekoaruki_haiiro5.png',
   // 他の画像ファイルのパスを追加
 ];
 
 // 画像をランダムに表示する
-document.addEventListener('DOMContentLoaded', () => {
-  // 配列からランダムに画像のパスを選択
-  const selectedImage = catImages[Math.floor(Math.random() * catImages.length)];
+document.addEventListener('DOMContentLoaded', async () => {
+  const now = new Date();
+  const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+  // 年月日を基にしたシード値を生成
+  const seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+  // シード値を基にして乱数を生成（疑似的な方法）
+  const pseudoRandom = Math.abs(Math.sin(seed)) * 10000 % 1;
+  // 乱数を基にして配列のインデックスを決定
+  const index = Math.floor(pseudoRandom * catImages.length);
+  const selectedImage = catImages[index];
 
-  // 選択された画像のパスをimg要素のsrc属性に設定
+  // ねこを画面に表示する
   const catImageElement = document.querySelector('.todays-cat img');
   if (catImageElement) {
     catImageElement.src = selectedImage;
   }
-});
 
-// データをfirebaseに保存する
-const saveData = async () => {
-  const now = new Date();
-  const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
-  const catName = "ねこ";
-  const catImageURL = "src/nekorobi_neko_1.png";
-
-  await setDoc(doc(db, "cats", date), {
-      catName: catName,
+  const userId = await getCurrentUserId();
+  // Firestoreにデータを保存
+  // 目標歩数を達成してから保存されるように修正する必要あり
+  const catImageURL = selectedImage;
+  setDoc(doc(db, `users/${userId}/cats`, date), {
       catImageURL: catImageURL,
   });
-}
-
-// ページ読み込み時にsaveDataを呼び出す
-document.addEventListener("DOMContentLoaded", saveData);
+});
