@@ -29,9 +29,12 @@ const catImages = [
 // 画像をランダムに表示する
 document.addEventListener('DOMContentLoaded', async () => {
   const now = new Date();
-  const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const date = `${yyyy}-${mm}-${dd}`;
   // 年月日を基にしたシード値を生成
-  const seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+  const seed = yyyy * 10000 + (mm + 1) * 100 + dd;
   // シード値を基にして乱数を生成（疑似的な方法）
   const pseudoRandom = Math.abs(Math.sin(seed)) * 10000 % 1;
   // 乱数を基にして配列のインデックスを決定
