@@ -3,6 +3,11 @@ document.addEventListener('DOMContentLoaded', function() {
   var isDragging = false;
   var startX, startY, initialX, initialY;
 
+  // 初期位置を設定
+  catImage.style.position = 'absolute';
+  catImage.style.left = '0px';
+  catImage.style.top = '0px';
+
   var touchStartHandler = function(e) {
     if (e.touches.length === 1) { // シングルタッチのみを処理
       isDragging = true;
@@ -20,8 +25,21 @@ document.addEventListener('DOMContentLoaded', function() {
       var currentY = e.touches[0].clientY;
       var deltaX = currentX - startX;
       var deltaY = currentY - startY;
-      catImage.style.left = initialX + deltaX + 'px';
-      catImage.style.top = initialY + deltaY + 'px';
+      var newLeft = initialX + deltaX;
+      var newTop = initialY + deltaY;
+      
+      // 画面の外に出ないように制限を設ける
+      var container = catImage.parentElement;
+      var containerRect = container.getBoundingClientRect();
+      var catImageRect = catImage.getBoundingClientRect();
+
+      if (newLeft < 0) newLeft = 0;
+      if (newTop < 0) newTop = 0;
+      if (newLeft + catImageRect.width > containerRect.width) newLeft = containerRect.width - catImageRect.width;
+      if (newTop + catImageRect.height > containerRect.height) newTop = containerRect.height - catImageRect.height;
+
+      catImage.style.left = newLeft + 'px';
+      catImage.style.top = newTop + 'px';
     }
   };
 
