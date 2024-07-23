@@ -1,67 +1,53 @@
-import { db } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { auth, db } from "./firebase-config.js";
 
-// 重力加速度のしきい値
+// 定数
 const GRAVITY_MIN = 9.8;
 const GRAVITY_MAX = 12.0;
-// 歩数
-let _step = 0;
-// 現在歩いているかどうか
-let _isStep = false;
-// ねこを表示する目標歩数を取得
-let firstGoal;
-// ねこをコレクションできる目標歩数を取得
-let secondGoal;
+
+// グローバル変数
+let firstGoal, secondGoal;
 
 // DOM要素
-const goalCountElement = document.getElementById("goalCount");
-const goalMessageElement = document.getElementById("goal-message");
-const filteredCat = document.querySelector(".filtered-cat");
+const elements = {
+  goalCount: document.getElementById("goalCount"),
+  goalMessage: document.getElementById("goal-message"),
+  filteredCat: document.querySelector(".filtered-cat"),
+  message: document.querySelector(".message"),
+  stepCount: document.getElementById("stepCount")
+};
 
-function initialize() {
-  // デバイスの加速度センサーの情報を取得します
-  window.addEventListener("devicemotion", onDeviceMotion);
+// 初期化関数
+function initializeApp() {
+  document.addEventListener('DOMContentLoaded', loadUserGoals);
+  window.addEventListener("devicemotion", handleDeviceMotion);
 }
 
-function onDeviceMotion(e) {
-  e.preventDefault();
-  // 重力加速度を取得
-  const ag = e.accelerationIncludingGravity;
-  // 重力加速度ベクトルの大きさを取得
-  const acc = Math.sqrt(ag.x * ag.x + ag.y * ag.y + ag.z * ag.z);
-
-  if (_isStep) {
-    // 歩行中にしきい値よりも低ければ一歩とみなす
-    if (acc < GRAVITY_MIN) {
-      _step++;
-      _isStep = false;
-      updateStepCount();
-      updateGoalCount();
-    }
-  } else {
-    // しきい値よりも大きければ歩いているとみなす
-    if (acc > GRAVITY_MAX) {
-      _isStep = true;
-    }
-  }
+const getCurrentUserId = () => {
+  return new Promise((resolve, reject) => {
+      onAuthStateChanged(auth, (user) => {
+          if (!user) {
+              reject('ユーザーがログインしていません。');
+              window.location.href = '../login.html';
+          } else {
+              resolve(user.uid);
+          }
+      })
+  })
 }
 
-function updateStepCount() {
-  const stepCountElement = document.getElementById("stepCount");
-  stepCountElement.textContent = _step;
-}
-
-async function loadSteps() {
+// ユーザーの目標をロードする
+async function loadUserGoals() {
+  const userId = await getCurrentUserId();
   try {
-    const docRef = doc(db, 'goals', 'userGoals');
+    const docRef = doc(db, 'users', userId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      const data = docSnap.data();
-      firstGoal = data.firstGoal;
-      secondGoal = data.secondGoal;
-      updateGoalCount();
-      console.log('ユーザーデータが取得されました:', data);
+      ({ firstGoal, secondGoal } = docSnap.data()); // 更新
+      console.log('ユーザーデータが取得されました:', docSnap.data());
+      updateGoalCount(0, firstGoal, secondGoal); // 初期歩数を0として更新
     } else {
       console.log('ユーザーデータが存在しません');
     }
@@ -70,16 +56,47 @@ async function loadSteps() {
   }
 }
 
-function updateGoalCount() {
-  if (_step >= firstGoal) {
-    goalMessageElement.textContent = "歩でねこをコレクションできるよ～";
-    filteredCat.style.filter = 'blur(0)';
+// 歩数と目標を更新する
+function updateGoalCount(steps, firstGoal, secondGoal) {
+  elements.stepCount.textContent = steps;
+  if (steps >= secondGoal) {
+    elements.message.innerHTML = "おめでとう！<br>ねこをコレクションできました！";
+  } else if (steps >= firstGoal) {
+    elements.goalMessage.textContent = "歩でねこをコレクションできるよ～";
+    elements.filteredCat.style.filter = 'blur(0)';
+    elements.goalCount.textContent = secondGoal - steps;
   } else {
-    goalCountElement.textContent = firstGoal - _step;
+    elements.goalCount.textContent = firstGoal - steps;
   }
 }
 
-// DOMの読み込みが完了したら、loadSteps関数を呼び出す
-document.addEventListener('DOMContentLoaded', loadSteps);
+// デバイスの動きを処理する
+function handleDeviceMotion(e) {
+  e.preventDefault();
+  const acc = calculateAcceleration(e.accelerationIncludingGravity);
+  processStepDetection(acc);
+}
 
-initialize();
+// 加速度を計算する
+function calculateAcceleration(ag) {
+  return Math.sqrt(ag.x ** 2 + ag.y ** 2 + ag.z ** 2);
+}
+
+// 歩数検出を処理する
+let isWalking = false;
+let steps = 0;
+function processStepDetection(acc) {
+  if (isWalking) {
+    if (acc < GRAVITY_MIN) {
+      steps++;
+      isWalking = false;
+      updateGoalCount(steps, firstGoal, secondGoal);
+    }
+  } else {
+    if (acc > GRAVITY_MAX) {
+      isWalking = true;
+    }
+  }
+}
+
+initializeApp();
