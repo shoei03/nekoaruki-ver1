@@ -65,6 +65,16 @@ var catImages = document.querySelectorAll('.picture img');
 var isDragging = false;
 var startX, startY, initialX, initialY;
 
+// 画像のURLを格納した配列
+const imageSources = [
+  'src/nekoaruki_haiiro1.png', // translate(0px, 0px) に対応
+  'src/cat.png', // translate(100px, -100px) に対応
+  'src/nekoaruki_haiiro3.png', // translate(0px, -200px) に対応
+  'src/nekoaruki_haiiro4.png', // translate(-200px, 0px) に対応
+  'src/nekoaruki_haiiro5.png', // translate(0px, 200px) に対応
+  'src/cat_8.png', // translate(100px, 100px) に対応
+];
+
 catImages.forEach((catImage) => { 
     // ウィンドウの大きさを取得
     var windowWidth = window.innerWidth;
@@ -158,14 +168,35 @@ catImages.forEach((catImage) => {
       { transform: getLimitedTransform('translate(0px, 0px)'), offset: 0.8 }
     ];
     
-    catImage.animate(
-      keyframes,
+    const animation = catImage.animate(keyframes, 
       {
         fill: 'forwards',
         duration: 30000,
         iterations: Infinity,
       }
     );
+
+     // アニメーションの進行に応じて画像を変更する関数
+     function updateImage(percentage) {
+      const imageIndex = Math.floor(percentage * imageSources.length);
+      console.log(imageIndex);
+      catImage.src = imageSources[imageIndex];
+    }
+
+    // アニメーションの進行に応じて画像を更新
+    function updateProgress() {
+      const currentTime = animation.currentTime;
+      const duration = animation.effect.getComputedTiming().duration;
+      let percentage = currentTime / duration;
+      if (percentage > 1) percentage = 0;
+      updateImage(percentage);
+    }
+
+    // アニメーションの進行状況を定期的にチェック
+    setInterval(updateProgress, 100);
+
+    // アニメーションが開始したときに初期画像を設定
+    updateImage(0);
     
     catImage.addEventListener('touchstart', touchStartHandler);
     document.addEventListener('touchmove', touchMoveHandler);
