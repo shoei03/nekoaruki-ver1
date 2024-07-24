@@ -71,9 +71,11 @@ catImages.forEach((catImage) => {
     var windowHeight = window.innerHeight;
     
     // 初期位置を設定
+    var randomLeft = Math.floor(Math.random() * (windowWidth - catImage.offsetWidth));
+    var randomTop = Math.floor(Math.random() * (windowHeight - catImage.offsetHeight));
     catImage.style.position = 'absolute';
-    catImage.style.left = '0px';
-    catImage.style.top = '0px';
+    catImage.style.left = randomLeft + 'px';
+    catImage.style.top = randomTop + 'px';
     
     var touchStartHandler = function(e) {
       if (e.touches.length === 1) { // シングルタッチのみを処理
