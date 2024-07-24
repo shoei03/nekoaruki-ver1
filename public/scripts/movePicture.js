@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var isDragging = false;
   var startX, startY, initialX, initialY;
 
-   // ウィンドウの大きさを取得
+  // ウィンドウの大きさを取得
   var windowWidth = window.innerWidth;
   var windowHeight = window.innerHeight;
 
@@ -37,8 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
       // 画面の外に出ないように制限を設ける
       if (newLeft < 0) newLeft = 0;
       if (newTop < 0) newTop = 0;
-      if (windowWidth-100 < newLeft) newLeft = windowWidth-100;
-      if (windowHeight-100 < newTop) newTop = windowHeight-100;
+      if (windowWidth - 100 < newLeft) newLeft = windowWidth - 100;
+      if (windowHeight - 100 < newTop) newTop = windowHeight - 100;
 
       catImage.style.left = newLeft + 'px';
       catImage.style.top = newTop + 'px';
@@ -50,29 +50,56 @@ document.addEventListener('DOMContentLoaded', function() {
     catImage.style.cursor = 'grab';
   };
 
+  // 位置を制限する関数
+  function getLimitedTransform(transform) {
+    var translateValues = transform.match(/-?\d+px/g);
+    if (!translateValues || translateValues.length !== 2) {
+      // マッチしなかった場合はデフォルト値を設定
+      return transform;
+    }
+
+    translateValues = translateValues.map(value => parseInt(value, 10));
+    var translateX = translateValues[0];
+    var translateY = translateValues[1];
+
+    var limitedX = translateX;
+    var limitedY = translateY;
+
+    if (translateX + initialX < 0) limitedX = -initialX;
+    if (translateY + initialY < 0) limitedY = -initialY;
+    if (translateX + initialX + catImage.offsetWidth > windowWidth) limitedX = windowWidth - catImage.offsetWidth - initialX;
+    if (translateY + initialY + catImage.offsetHeight > windowHeight) limitedY = windowHeight - catImage.offsetHeight - initialY;
+
+    return `translate(${limitedX}px, ${limitedY}px)`;
+  }
+
+  // 初期位置を取得
+  initialX = catImage.offsetLeft;
+  initialY = catImage.offsetTop;
+
   // 画像を左端から動かす
+  var keyframes = [
+    { transform: getLimitedTransform('translate(0px, 0px)'), offset: 0 },
+    { transform: getLimitedTransform('translate(100px, -100px)'), offset: 0.05 },
+    { transform: getLimitedTransform('translate(100px, -100px)'), offset: 0.1 },
+    { transform: getLimitedTransform('translate(0px, -200px)'), offset: 0.2 },
+    { transform: getLimitedTransform('translate(0px, -200px)'), offset: 0.25 },
+    { transform: getLimitedTransform('translate(-200px, 0px)'), offset: 0.35 },
+    { transform: getLimitedTransform('translate(-200px, 0px)'), offset: 0.4 },
+    { transform: getLimitedTransform('translate(0px, 200px)'), offset: 0.5 },
+    { transform: getLimitedTransform('translate(0px, 200px)'), offset: 0.55 },
+    { transform: getLimitedTransform('translate(100px, 100px)'), offset: 0.65 },
+    { transform: getLimitedTransform('translate(100px, 100px)'), offset: 0.75 },
+    { transform: getLimitedTransform('translate(0px, 0px)'), offset: 0.8 }
+  ];
+
   catImage.animate(
-    // 途中の状態を表す配列
-    [
-      { transform: 'translate(0, 0)', offset: 0},// 開始時の状態
-      { transform: 'translate(100px, -100px)', offset: 0.05},
-      { transform: 'translate(100px, -100px)', offset: 0.1},
-      { transform: 'translate(0, -200px)', offset: 0.2},
-      { transform: 'translate(0, -200px)', offset: 0.25},
-      { transform: 'translate(-200px, 0)', offset: 0.35},
-      { transform: 'translate(-200px, 0)', offset: 0.4},
-      { transform: 'translate(0, 200px)', offset: 0.5},
-      { transform: 'translate(0, 200px)', offset: 0.55},
-      { transform: 'translate(100px, 100px)', offset: 0.65},
-      { transform: 'translate(100px, 100px)', offset: 0.75},
-      { transform: 'translate(0, 0)', offset: 0.8} // 終了時の状態
-    ],
-    // タイミングに関する設定
+    keyframes,
     {
-      fill: 'backwards', // 再生前後の状態（再生前、開始時の状態を適用）
-      duration: 30000, // 再生時間（ミリ秒）
-      iterations: Infinity,  // アニメーションの繰り返し回数（ずっと繰り返す）
-    },
+      fill: 'forwards',
+      duration: 30000,
+      iterations: Infinity,
+    }
   );
 
   catImage.addEventListener('touchstart', touchStartHandler);
