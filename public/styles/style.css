@@ -84,6 +84,14 @@ body {
   min-height: 60vh;
 }
 
+.full {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: url("https://cdn.qleanmarket.amanaimages.com/uploads/items/003/047/58/preview/FYI00304758.jpg")
+    center / cover;
+}
+
 .picture-container {
   text-align: center;
   display: flex;
