@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // 今日の曜日が設定されている曜日の中にあれば通知時刻を取得
       if (day === dayOfTodayJapanese) {
         const notificationTime = generateRandomNotificationTime(data);
+        console.log(`通知時刻: ${notificationTime}`);
         // 通知を送信
         scheduleNotification(notificationTime);
         return;
@@ -43,7 +44,9 @@ function generateRandomNotificationTime(data) {
   const startHour = parseInt(startTime[0]);
   const endHour = parseInt(endTime[0]);
   const randomHour = Math.floor(Math.random() * (endHour - startHour + 1)) + startHour;
-  const randomMinute = Math.floor(Math.random() * 60);
+  const startMinute = parseInt(startTime[1]);
+  const endMinute = parseInt(endTime[1]);
+  const randomMinute = Math.floor(Math.random() * (endMinute - startMinute + 1)) + startMinute;
   const now = new Date();
   const yyyy = now.getFullYear();
   const mm = String(now.getMonth() + 1).padStart(2, '0');
