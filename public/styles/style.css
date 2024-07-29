@@ -105,6 +105,12 @@ body {
   max-height: 100px;
 }
 
+.picture > video,
+.picture > img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
 /* ハンバーガーボタン */
 .hamburger {
   display: block;
