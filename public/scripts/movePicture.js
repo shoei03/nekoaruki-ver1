@@ -75,31 +75,31 @@ const imageSources = [
   'src/cat_8.png', // translate(100px, 100px) に対応
 ];
 
-catImages.forEach((catImage) => { 
+catImages.forEach((catImage) => {
     // ウィンドウの大きさを取得
     var windowWidth = window.innerWidth;
     var windowHeight = window.innerHeight;
-    
+
     // 初期位置を設定
     var randomLeft = Math.floor(Math.random() * (windowWidth - catImage.offsetWidth));
     var randomTop = Math.floor(Math.random() * (windowHeight - catImage.offsetHeight));
     catImage.style.position = 'absolute';
     catImage.style.left = randomLeft + 'px';
     catImage.style.top = randomTop + 'px';
-    
+
     var touchStartHandler = function(e) {
       if (e.touches.length === 1) { // シングルタッチのみを処理
         isDragging = true;
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
-    
+
         // 画像の左上の座標を左上の原点として取得
         initialX = catImage.offsetLeft;
         initialY = catImage.offsetTop;
         catImage.style.cursor = 'grabbing';
       }
     };
-    
+
     var touchMoveHandler = function(e) {
       if (isDragging) {
         var currentX = e.touches[0].clientX;
@@ -108,23 +108,23 @@ catImages.forEach((catImage) => {
         var deltaY = currentY - startY;
         var newLeft = initialX + deltaX;
         var newTop = initialY + deltaY;
-    
+
         // 画面の外に出ないように制限を設ける
         if (newLeft < 0) newLeft = 0;
         if (newTop < 0) newTop = 0;
         if (windowWidth - 100 < newLeft) newLeft = windowWidth - 100;
         if (windowHeight - 100 < newTop) newTop = windowHeight - 100;
-    
+
         catImage.style.left = newLeft + 'px';
         catImage.style.top = newTop + 'px';
       }
     };
-    
+
     var touchEndHandler = function() {
       isDragging = false;
       catImage.style.cursor = 'grab';
     };
-    
+
     // 位置を制限する関数
     function getLimitedTransform(transform) {
       var translateValues = transform.match(/-?\d+px/g);
@@ -132,26 +132,26 @@ catImages.forEach((catImage) => {
         // マッチしなかった場合はデフォルト値を設定
         return transform;
       }
-    
+
       translateValues = translateValues.map(value => parseInt(value, 10));
       var translateX = translateValues[0];
       var translateY = translateValues[1];
-    
+
       var limitedX = translateX;
       var limitedY = translateY;
-    
+
       if (translateX + initialX < 0) limitedX = -initialX;
       if (translateY + initialY < 0) limitedY = -initialY;
       if (translateX + initialX + catImage.offsetWidth > windowWidth) limitedX = windowWidth - catImage.offsetWidth - initialX;
       if (translateY + initialY + catImage.offsetHeight > windowHeight) limitedY = windowHeight - catImage.offsetHeight - initialY;
-    
+
       return `translate(${limitedX}px, ${limitedY}px)`;
     }
-    
+
     // 初期位置を取得
     initialX = catImage.offsetLeft;
     initialY = catImage.offsetTop;
-    
+
     // 画像を左端から動かす
     var keyframes = [
       { transform: getLimitedTransform('translate(0px, 0px)'), offset: 0 },
@@ -167,8 +167,8 @@ catImages.forEach((catImage) => {
       { transform: getLimitedTransform('translate(100px, 100px)'), offset: 0.75 },
       { transform: getLimitedTransform('translate(0px, 0px)'), offset: 0.8 }
     ];
-    
-    const animation = catImage.animate(keyframes, 
+
+    const animation = catImage.animate(keyframes,
       {
         fill: 'forwards',
         duration: 30000,
@@ -197,10 +197,10 @@ catImages.forEach((catImage) => {
 
     // アニメーションが開始したときに初期画像を設定
     updateImage(0);
-    
+
     catImage.addEventListener('touchstart', touchStartHandler);
-    document.addEventListener('touchmove', touchMoveHandler);
-    document.addEventListener('touchend', touchEndHandler);
+    catImage.addEventListener('touchmove', touchMoveHandler);
+    catImage.addEventListener('touchend', touchEndHandler);
   })
 }
 

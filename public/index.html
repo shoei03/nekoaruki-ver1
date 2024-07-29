@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="styles/style.css" />
     <link
       rel="shortcut icon"
-      href="https://www.kaigo-antenna.jp/uploads/illustration/main_image/789/202107_009_s.jpg"
+      href="src/nekorobi_neko_1.png"
     />
   </head>
   <body>
@@ -83,20 +83,18 @@
         </div>
       </div>
     </header>
-
-    <div class="container">
-      <div class="picture-container">
-        <div class="picture">
-          <!-- カメラプレビュー -->
-          <video id="video" autoplay playsinline style="display: none;"></video>
-          <!-- 撮影された写真を表示 -->
-          <img id="photo" alt="撮影された写真">
-        </div>
-        <!-- 写真を撮るボタン -->
-        <button id="takePhotoButton" class="btn btn-lg button">写真を撮る</button>
-        <!-- 画像キャプチャ用のキャンバス -->
-        <canvas id="canvas" style="display: none;"></canvas>
+    <div class="container full">
+      <div class="picture">
+        <!-- カメラプレビュー -->
+        <video id="video" autoplay playsinline style="display: none;"></video>
+        <!-- 撮影された写真を表示 -->
+        <img id="photo" alt="撮影された写真">
       </div>
+      <!-- 写真を撮るボタン -->
+      <button id="takePhotoButton" class="btn btn-lg button">写真を撮る</button>
+      <!-- 画像キャプチャ用のキャンバス -->
+      <canvas id="canvas" style="display: none;"></canvas>
+      
       <button class="btn btn-lg button" onclick="location.href='walking.html'">
         あるく
       </button>
