@@ -8,20 +8,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     startCameraButton.addEventListener('click', async () => {
         // カメラにアクセス
-        console.log("カメラ接続");
         try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = stream;
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            video.style.display = 'block'; // カメラプレビューを表示
+            takePhotoButton.style.display = 'block'; // 写真を撮るボタンを表示
+            startCameraButton.style.display = 'none'; // カメラを起動ボタンを非表示
         } catch (err) {
-        console.error('カメラへのアクセスが拒否されました:', err);
+            console.error('カメラへのアクセスが拒否されました:', err);
         }
     });
   
-    
-  
     // 写真を撮る
     takePhotoButton.addEventListener('click', () => {
-        console.log("写真を撮る");
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
