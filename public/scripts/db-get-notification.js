@@ -71,7 +71,7 @@ function scheduleNotification(time) {
 function sendNotification() {
   Push.create("今すぐ歩かないと！！", {
     body: "散歩の時間です",
-    icon: "https://www.kaigo-antenna.jp/uploads/illustration/main_image/789/202107_009_s.jpg",
+    icon: "src/nekoaruki_haiiro1.png",
     tag: "myTag",
     timeout: 12000,
     vibrate: [100, 100, 100],
