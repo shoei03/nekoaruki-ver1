@@ -5,6 +5,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const photo = document.getElementById('photo');
     const takePhotoButton = document.getElementById('takePhotoButton');
     const startCameraButton = document.getElementById('startCameraButton');
+    const picture = document.querySelector('.photo');
+    
+    // homeButton.textContent = 'ホームに戻る';
+    // homeButton.classList.add('btn', 'btn-lg');
+    // homeButton.style.display = 'none'; // 初期状態では非表示
+    picture.innerHTML = "<button class='btn btn-lg' id='home-button' style='display: none;'>ホームに戻る</button>";
+    const homeButton = document.getElementById('home-button');
     
     startCameraButton.addEventListener('click', async () => {
         // カメラにアクセス
@@ -14,6 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             video.style.display = 'block'; // カメラプレビューを表示
             takePhotoButton.style.display = 'block'; // 写真を撮るボタンを表示
             startCameraButton.style.display = 'none'; // カメラを起動ボタンを非表示
+            homeButton.style.display = 'block'; // ホームに戻るボタンを表示
         } catch (err) {
             console.error('カメラへのアクセスが拒否されました:', err);
         }
@@ -28,6 +36,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         photo.setAttribute('src', dataUrl);
   
       // ここでdataUrlを使用してサーバーに送信するなどの保存処理を追加できます。
+    });
+
+    // ホームに戻るボタンのクリックイベント
+    homeButton.addEventListener('click', () => {
+        const stream = video.srcObject;
+        const tracks = stream.getTracks();
+
+        // 全てのトラックを停止
+        tracks.forEach(track => track.stop());
+
+        video.srcObject = null;
+        video.style.display = 'none'; // カメラプレビューを非表示
+        takePhotoButton.style.display = 'none'; // 写真を撮るボタンを非表示
+        startCameraButton.style.display = 'block'; // カメラを起動ボタンを表示
+        homeButton.style.display = 'none'; // ホームに戻るボタンを非表示
     });
 });
 
