@@ -88,8 +88,21 @@ body {
   position: relative;
   width: 100%;
   min-height: 100vh;
-  background: url("https://cdn.qleanmarket.amanaimages.com/uploads/items/003/047/58/preview/FYI00304758.jpg")
+  background: url("")
     center / cover;
+}
+
+.obstacle-1 {
+  position: absolute;
+  right: 0;
+  z-index: 20;
+}
+
+.obstacle-2 {
+  position: absolute;
+  left: 0;
+  bottom: 200px;
+  z-index: 20;
 }
 
 .picture-container {
