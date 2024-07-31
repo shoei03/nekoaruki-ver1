@@ -55,12 +55,12 @@ function movePicture() {
 
   // 画像のURLを格納した配列
   const imageSources = [
-    'src/nekoaruki_haiiro1.png', // translate(0px, 0px) に対応
-    'src/cat.png', // translate(100px, -100px) に対応
-    'src/nekoaruki_haiiro3.png', // translate(0px, -200px) に対応
-    'src/nekoaruki_haiiro4.png', // translate(-200px, 0px) に対応
-    'src/nekoaruki_haiiro5.png', // translate(0px, 200px) に対応
-    'src/cat_8.png', // translate(100px, 100px) に対応
+    'src/nekoaruki_haiiro_aruki.png', // translate(0px, 0px) に対応
+    'src/nekoaruki_haiiro_aruki.png', // translate(100px, -100px) に対応
+    'src/nekoaruki_haiiro_aruki.png', // translate(0px, -200px) に対応
+    'src/nekoaruki_haiiro_aruki.png', // translate(-200px, 0px) に対応
+    'src/nekoaruki_haiiro_aruki.png', // translate(0px, 200px) に対応
+    'src/nekoaruki_haiiro_aruki.png', // translate(100px, 100px) に対応
   ];
 
   // ウィンドウの大きさを取得
