@@ -1,19 +1,7 @@
-import { auth, db } from "./firebase-config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
 import { collection, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
-
-const getCurrentUserId = () => {
-  return new Promise((resolve, reject) => {
-      onAuthStateChanged(auth, (user) => {
-          if (!user) {
-              reject('ユーザーがログインしていません。');
-              window.location.href = '../login.html';
-          } else {
-              resolve(user.uid);
-          }
-      })
-  })
-}
+import { db } from "./firebase-config.js";
+import { getCurrentUserId } from "./getCurrentUserId.js";
+import { catImages } from "./displayTodaysCat.js";
 
 const getRecentDates = (days) => {
   const dates = [];
@@ -61,25 +49,25 @@ const displayCatsFromLastFourDays = async () => {
 };
 
 function movePicture() {
-var catImages = document.querySelectorAll('.picture img');
-var isDragging = false;
-var startX, startY, initialX, initialY;
+  const catImages = document.querySelectorAll('.picture img');
+  var isDragging = false;
+  var startX, startY, initialX, initialY;
 
-// 画像のURLを格納した配列
-const imageSources = [
-  'src/nekoaruki_haiiro1.png', // translate(0px, 0px) に対応
-  'src/cat.png', // translate(100px, -100px) に対応
-  'src/nekoaruki_haiiro3.png', // translate(0px, -200px) に対応
-  'src/nekoaruki_haiiro4.png', // translate(-200px, 0px) に対応
-  'src/nekoaruki_haiiro5.png', // translate(0px, 200px) に対応
-  'src/cat_8.png', // translate(100px, 100px) に対応
-];
+  // 画像のURLを格納した配列
+  const imageSources = [
+    'src/nekoaruki_haiiro1.png', // translate(0px, 0px) に対応
+    'src/cat.png', // translate(100px, -100px) に対応
+    'src/nekoaruki_haiiro3.png', // translate(0px, -200px) に対応
+    'src/nekoaruki_haiiro4.png', // translate(-200px, 0px) に対応
+    'src/nekoaruki_haiiro5.png', // translate(0px, 200px) に対応
+    'src/cat_8.png', // translate(100px, 100px) に対応
+  ];
 
-catImages.forEach((catImage) => {
-    // ウィンドウの大きさを取得
-    var windowWidth = window.innerWidth;
-    var windowHeight = window.innerHeight;
+  // ウィンドウの大きさを取得
+  var windowWidth = window.innerWidth;
+  var windowHeight = window.innerHeight;
 
+  catImages.forEach((catImage) => {
     // 初期位置を設定
     var randomLeft = Math.floor(Math.random() * (windowWidth - catImage.offsetWidth));
     var randomTop = Math.floor(Math.random() * (windowHeight - catImage.offsetHeight));
@@ -87,42 +75,51 @@ catImages.forEach((catImage) => {
     catImage.style.left = randomLeft + 'px';
     catImage.style.top = randomTop + 'px';
 
-    var touchStartHandler = function(e) {
+    let tmpCatImageRef;
+
+    var touchStartHandler = function (e) {
       if (e.touches.length === 1) { // シングルタッチのみを処理
         isDragging = true;
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
 
-        // 画像の左上の座標を左上の原点として取得
+        // 画像の左上の座標を原点として取得
         initialX = catImage.offsetLeft;
         initialY = catImage.offsetTop;
         catImage.style.cursor = 'grabbing';
+        tmpCatImageRef = catImage.getAttribute('src');
+        const color = tmpCatImageRef.match(/_(.+)_/)[1];
+        catImage.src = `src/nekoaruki_${color}_tsukami.png`;
       }
     };
 
-    var touchMoveHandler = function(e) {
+    var touchMoveHandler = function (e) {
       if (isDragging) {
+        // ドラッグ中の座標を取得
         var currentX = e.touches[0].clientX;
         var currentY = e.touches[0].clientY;
+        // ドラッグ中の座標と初期座標の差分を取得
         var deltaX = currentX - startX;
         var deltaY = currentY - startY;
+        // 画像の新しい座標を計算
         var newLeft = initialX + deltaX;
         var newTop = initialY + deltaY;
+        // 画像の座標を更新
+        catImage.style.left = newLeft + 'px';
+        catImage.style.top = newTop + 'px';
 
-        // 画面の外に出ないように制限を設ける
+        // 画像がウィンドウの外に出ないように制限
         if (newLeft < 0) newLeft = 0;
         if (newTop < 0) newTop = 0;
         if (windowWidth - 100 < newLeft) newLeft = windowWidth - 100;
         if (windowHeight - 100 < newTop) newTop = windowHeight - 100;
-
-        catImage.style.left = newLeft + 'px';
-        catImage.style.top = newTop + 'px';
       }
     };
 
-    var touchEndHandler = function() {
+    var touchEndHandler = function () {
       isDragging = false;
       catImage.style.cursor = 'grab';
+      catImage.src = tmpCatImageRef;
     };
 
     // 位置を制限する関数
@@ -176,8 +173,8 @@ catImages.forEach((catImage) => {
       }
     );
 
-     // アニメーションの進行に応じて画像を変更する関数
-     function updateImage(percentage) {
+    // アニメーションの進行に応じて画像を変更する関数
+    function updateImage(percentage) {
       const imageIndex = Math.floor(percentage * imageSources.length);
       console.log(imageIndex);
       catImage.src = imageSources[imageIndex];
