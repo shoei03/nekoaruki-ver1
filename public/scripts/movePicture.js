@@ -173,27 +173,27 @@ function movePicture() {
       }
     );
 
-    // アニメーションの進行に応じて画像を変更する関数
-    function updateImage(percentage) {
-      const imageIndex = Math.floor(percentage * imageSources.length);
-      console.log(imageIndex);
-      catImage.src = imageSources[imageIndex];
-    }
+    // // アニメーションの進行に応じて画像を変更する関数
+    // function updateImage(percentage) {
+    //   const imageIndex = Math.floor(percentage * imageSources.length);
+    //   console.log(imageIndex);
+    //   catImage.src = imageSources[imageIndex];
+    // }
 
-    // アニメーションの進行に応じて画像を更新
-    function updateProgress() {
-      const currentTime = animation.currentTime;
-      const duration = animation.effect.getComputedTiming().duration;
-      let percentage = currentTime / duration;
-      if (percentage > 1) percentage = 0;
-      updateImage(percentage);
-    }
+    // // アニメーションの進行に応じて画像を更新
+    // function updateProgress() {
+    //   const currentTime = animation.currentTime;
+    //   const duration = animation.effect.getComputedTiming().duration;
+    //   let percentage = currentTime / duration;
+    //   if (percentage > 1) percentage = 0;
+    //   updateImage(percentage);
+    // }
 
-    // アニメーションの進行状況を定期的にチェック
-    setInterval(updateProgress, 100);
+    // // アニメーションの進行状況を定期的にチェック
+    // setInterval(updateProgress, 100);
 
-    // アニメーションが開始したときに初期画像を設定
-    updateImage(0);
+    // // アニメーションが開始したときに初期画像を設定
+    // updateImage(0);
 
     catImage.addEventListener('touchstart', touchStartHandler);
     catImage.addEventListener('touchmove', touchMoveHandler);
