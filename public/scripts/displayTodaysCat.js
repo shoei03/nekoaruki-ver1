@@ -18,13 +18,15 @@ const getCurrentUserId = () => {
 // 画像ファイルのパスを含む配列
 const catImages = [
   'src/わだにゃん.png',
-  'src/nekorobi_neko_1.png',
-  'src/nekoaruki_haiiro1.png',
-  'src/nekoaruki_haiiro3.png',
-  'src/nekoaruki_haiiro4.png',
-  'src/nekoaruki_haiiro5.png',
+  'src/nekoaruki_haiiro_ikari.png',
+  'src/nekoaruki_haiiro_tobi.png',
+  'src/nekoaruki_haiiro_amae.png',
+  'src/nekoaruki_haiiro_nobi.png',
+  'src/nekoaruki_mike_nekorobi.png',
+  'src/nekoaruki_siro_tobi.png',
   // 他の画像ファイルのパスを追加
 ];
+export { catImages };
 
 // 画像をランダムに表示する
 document.addEventListener('DOMContentLoaded', async () => {
