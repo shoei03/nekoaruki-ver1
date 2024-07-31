@@ -257,7 +257,7 @@ body {
   color: #172e59;
   font-weight: 900;
   transition: color 0.4s;
-  font-size: 0.875rem;
+  font-size: 1.5rem;
 }
 .global-navigation__link.-accordion {
   position: relative;
