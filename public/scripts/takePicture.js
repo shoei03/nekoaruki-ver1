@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const photo = document.getElementById('photo');
     const takePhotoButton = document.getElementById('takePhotoButton');
     const startCameraButton = document.getElementById('startCameraButton');
-    const picture = document.querySelector('.picture');
+    const picture = document.querySelector('.photo');
     
     // homeButton.textContent = 'ホームに戻る';
     // homeButton.classList.add('btn', 'btn-lg');
