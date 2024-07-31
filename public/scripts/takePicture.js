@@ -1,3 +1,6 @@
+import { storage } from "./firebase-config.js";
+import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js";
+
 document.addEventListener('DOMContentLoaded', async () => {
 
     const video = document.getElementById('video');
@@ -6,13 +9,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const takePhotoButton = document.getElementById('takePhotoButton');
     const startCameraButton = document.getElementById('startCameraButton');
     const picture = document.querySelector('.photo');
-    
-    // homeButton.textContent = 'ホームに戻る';
-    // homeButton.classList.add('btn', 'btn-lg');
-    // homeButton.style.display = 'none'; // 初期状態では非表示
+
     picture.innerHTML = "<button class='btn btn-lg' id='home-button' style='display: none;'>ホームに戻る</button>";
     const homeButton = document.getElementById('home-button');
-    
+
     startCameraButton.addEventListener('click', async () => {
         // カメラにアクセス
         try {
@@ -26,16 +26,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('カメラへのアクセスが拒否されました:', err);
         }
     });
-  
+
     // 写真を撮る
-    takePhotoButton.addEventListener('click', () => {
+    takePhotoButton.addEventListener('click', async () => {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
         const dataUrl = canvas.toDataURL('image/png');
         photo.setAttribute('src', dataUrl);
-  
-      // ここでdataUrlを使用してサーバーに送信するなどの保存処理を追加できます。
+
+        // 画像をFirebase Storageにアップロード
+        try {
+            const blob = await (await fetch(dataUrl)).blob();
+            const storageRef = ref(storage, 'photos/' + new Date().toISOString() + '.png');
+            await uploadBytes(storageRef, blob);
+            const downloadURL = await getDownloadURL(storageRef);
+            console.log('File available at', downloadURL);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
     });
 
     // ホームに戻るボタンのクリックイベント
@@ -53,5 +62,3 @@ document.addEventListener('DOMContentLoaded', async () => {
         homeButton.style.display = 'none'; // ホームに戻るボタンを非表示
     });
 });
-
-  
