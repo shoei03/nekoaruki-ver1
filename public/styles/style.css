@@ -130,6 +130,31 @@ body {
   max-height: 100%;
 }
 
+.photo-button {
+  min-height: 56px;
+  width: 80%;
+  border: none;
+  color: var(--bs-white);
+  cursor: pointer;
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+}
+
+#home-button {
+  min-height: 56px;
+  width: 80%;
+  border: none;
+  color: var(--bs-white);
+  cursor: pointer;
+  position: fixed;
+  left: 20%;
+  transform: translateX(-50%);
+  z-index: 30;
+}
+
 /* ハンバーガーボタン */
 .hamburger {
   display: block;

@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const startCameraButton = document.getElementById('startCameraButton');
     const picture = document.querySelector('.photo');
 
-    picture.innerHTML = "<button class='btn btn-lg' id='home-button' style='display: none;'>ホームに戻る</button>";
+    picture.innerHTML = "<button class='btn btn-lg' id='home-button' style='display: none;'><img src='src/backspace.png' alt='return home'></button>";
     const homeButton = document.getElementById('home-button');
 
     startCameraButton.addEventListener('click', async () => {
