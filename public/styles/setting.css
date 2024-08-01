@@ -211,3 +211,23 @@ h1 {
   left: 50%;
   overflow: visible;
 }
+
+.year-month-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.prev {
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+.year-month {
+  font-size: 2rem;
+}
+.next {
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
+}

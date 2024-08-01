@@ -1,21 +1,7 @@
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 import { ref, listAll, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js";
-import { auth, db } from "./firebase-config.js";
-import { storage } from "./firebase-config.js";
-
-const getCurrentUserId = () => {
-    return new Promise((resolve, reject) => {
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                reject('ユーザーがログインしていません。');
-                window.location.href = '../login.html';
-            } else {
-                resolve(user.uid);
-            }
-        })
-    })
-}
+import { db, storage } from "./firebase-config.js";
+import { getCurrentUserId } from "./getCurrentUserId.js";
 
 // カレンダーの日付要素を生成する関数
 const generateCalendarDays = (daysInMonth) => {
