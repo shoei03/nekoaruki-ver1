@@ -1,8 +1,9 @@
 import { storage } from "./firebase-config.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js";
+import { getCurrentUserId } from "./getCurrentUserId.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
-
+    const userId = await getCurrentUserId();
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const photo = document.getElementById('photo');
@@ -38,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 画像をFirebase Storageにアップロード
         try {
             const blob = await (await fetch(dataUrl)).blob();
-            const storageRef = ref(storage, 'photos/' + new Date().toISOString() + '.png');
+            const storageRef = ref(storage, `photos/${userId}/` + new Date().toISOString() + '.png');
             await uploadBytes(storageRef, blob);
             const downloadURL = await getDownloadURL(storageRef);
             console.log('File available at', downloadURL);

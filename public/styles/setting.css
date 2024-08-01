@@ -185,6 +185,7 @@ h1 {
   min-width: 20px;
   position: relative;
   background-color: var(--bs-white);
+  background-size: contain;
 }
 
 .day img.cat-icon {

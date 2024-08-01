@@ -1,6 +1,8 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { ref, listAll, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js";
 import { auth, db } from "./firebase-config.js";
+import { storage } from "./firebase-config.js";
 
 const getCurrentUserId = () => {
     return new Promise((resolve, reject) => {
@@ -79,4 +81,50 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
     });
+
+    getImagesFromStorage();
 })
+
+function extractDate(url) {
+    // 正規表現を使って日付部分を抽出
+    const datePattern = /(\d{4})-(\d{2})-(\d{2})T/;
+    const match = url.match(datePattern);
+
+    if (match) {
+        const year = match[1];
+        const month = parseInt(match[2], 10); // 文字列の月を整数に変換
+        const day = parseInt(match[3], 10);
+
+        // 月が0から始まる場合の変換
+        const formattedMonth = day.toString(); // 先頭の0を削除
+
+        return {
+            year: year,
+            month: formattedMonth,
+            day: day
+        };
+    } else {
+        throw new Error("日付が含まれていないURLです。");
+    }
+}
+
+// Firebase Storageから画像を取得して表示する関数
+async function getImagesFromStorage() {
+    const userId = await getCurrentUserId();
+    const imagesRef = ref(storage, `photos/${userId}/`);
+    try {
+        const result = await listAll(imagesRef);
+        if (result.items.length === 0) {
+            console.log("No images found in the photos folder.");
+            return;
+        }
+        result.items.forEach(async (imageRef) => {
+            const photoImageUrl = await getDownloadURL(imageRef);
+            const date = extractDate(photoImageUrl);
+            const day = date.day;
+            document.querySelector(`.calendar .day[data-day="${day}"]`).style.backgroundImage = `url(${photoImageUrl})`;
+        });
+    } catch (error) {
+        console.error("Error fetching images:", error);
+    }
+}
