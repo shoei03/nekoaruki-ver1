@@ -32,7 +32,7 @@ const showGoalSteps = async (goalDocs) => {
 
 const editGoal = (element) => {
     const currentValue = element.dataset.value;
-    element.innerHTML = `<input type="number" value="${currentValue}" class="form-control form-control-lg" min="0" step="100">`;
+    element.innerHTML = `<input type="number" value="${currentValue}" class="form-control form-control-lg" min="1000" step="100">`;
     const input = element.querySelector('input');
     input.focus();
     return input;
