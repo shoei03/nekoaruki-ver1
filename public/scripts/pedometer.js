@@ -1,6 +1,7 @@
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
-import { auth, db } from "./firebase-config.js";
+import { doc, getDoc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+import { db } from "./firebase-config.js";
+import { getCurrentUserId } from "./getCurrentUserId.js";
+import { catImageURL } from "./displayTodaysCat.js";
 
 // 定数
 const GRAVITY_MIN = 9.8;
@@ -22,32 +23,26 @@ const elements = {
 function initializeApp() {
   document.addEventListener('DOMContentLoaded', loadUserGoals);
   window.addEventListener("devicemotion", handleDeviceMotion);
-}
-
-const getCurrentUserId = () => {
-  return new Promise((resolve, reject) => {
-      onAuthStateChanged(auth, (user) => {
-          if (!user) {
-              reject('ユーザーがログインしていません。');
-              window.location.href = '../login.html';
-          } else {
-              resolve(user.uid);
-          }
-      })
-  })
+  window.addEventListener("beforeunload", saveStepsToFirestore); // ページ離脱時に歩数を保存
 }
 
 // ユーザーの目標をロードする
+let steps = 0;
 async function loadUserGoals() {
   const userId = await getCurrentUserId();
   try {
     const docRef = doc(db, 'users', userId);
     const docSnap = await getDoc(docRef);
+    const catsDocs = await getDocs(collection(db, `users/${userId}/cats`));
+    catsDocs.forEach((catsdoc) => {
+      const data = catsdoc.data();
+      steps = data.steps;
+    });
 
     if (docSnap.exists()) {
       ({ firstGoal, secondGoal } = docSnap.data()); // 更新
       console.log('ユーザーデータが取得されました:', docSnap.data());
-      updateGoalCount(0, firstGoal, secondGoal); // 初期歩数を0として更新
+      updateGoalCount(steps, firstGoal, secondGoal); // 初期歩数を0として更新
     } else {
       console.log('ユーザーデータが存在しません');
     }
@@ -61,10 +56,13 @@ function updateGoalCount(steps, firstGoal, secondGoal) {
   elements.stepCount.textContent = steps;
   if (steps >= secondGoal) {
     elements.message.innerHTML = "おめでとう！<br>ねこをコレクションできました！";
+    elements.filteredCat.style.filter = 'blur(0)';
+    saveStepsToFirestore(true);
   } else if (steps >= firstGoal) {
-    elements.goalMessage.textContent = "歩でねこをコレクションできるよ～";
+    elements.goalMessage.innerHTML = "歩で<br>ねこをコレクションできるよ～";
     elements.filteredCat.style.filter = 'blur(0)';
     elements.goalCount.textContent = secondGoal - steps;
+    saveStepsToFirestore(false);
   } else {
     elements.goalCount.textContent = firstGoal - steps;
   }
@@ -84,7 +82,6 @@ function calculateAcceleration(ag) {
 
 // 歩数検出を処理する
 let isWalking = false;
-let steps = 0;
 function processStepDetection(acc) {
   if (isWalking) {
     if (acc < GRAVITY_MIN) {
@@ -97,6 +94,22 @@ function processStepDetection(acc) {
       isWalking = true;
     }
   }
+}
+
+// 歩数をFirestoreに保存する
+async function saveStepsToFirestore(isSaved) {
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const date = `${yyyy}-${mm}-${dd}`;
+
+  const userId = await getCurrentUserId();
+  setDoc(doc(db, `users/${userId}/cats`, date), {
+      catImageURL: catImageURL,
+      steps: steps,
+      isSaved: isSaved,
+  });
 }
 
 initializeApp();
