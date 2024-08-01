@@ -191,8 +191,7 @@ h1 {
 .day img.cat-icon {
   width: 24px;
   height: 24px;
-  position: absolute;
-  bottom: 5px;
+  position: relative;
 }
 
 .auth-container {
