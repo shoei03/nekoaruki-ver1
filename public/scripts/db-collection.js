@@ -44,10 +44,10 @@ const showCatCollection = (catsDocs) => {
         const dayElement = document.querySelector(`.calendar .day[data-day="${day}"]`);
         if (dayElement) {
             // 画像を追加
-            const img = document.createElement("img");
-            img.src = catImageURL;
-            img.className = "cat-icon";
-            dayElement.appendChild(img);
+            const catImg = document.createElement("img");
+            catImg.src = catImageURL;
+            catImg.className = "cat-icon";
+            dayElement.appendChild(catImg);
         }
     });
 };
@@ -64,4 +64,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     const catsDocs = await getDocs(collection(db, `users/${userId}/cats`));
     // 取得したねこをカレンダーに表示
     showCatCollection(catsDocs);
+
+    // カレンダーの日付要素にクリックイベントを追加
+    const calendarDays = document.querySelectorAll(".day");
+    calendarDays.forEach(day => {
+        day.addEventListener("click", (event) => {
+            const activeDay = document.querySelector(".day.enlarge");
+            if (activeDay && activeDay !== day) {
+                activeDay.classList.remove("enlarge");
+            }
+            day.classList.toggle("enlarge");
+            if (day.classList.contains("enlarge")) {
+                day.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+            }
+        });
+    });
 })

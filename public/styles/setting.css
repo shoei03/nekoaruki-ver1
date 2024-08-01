@@ -184,6 +184,7 @@ h1 {
   min-height: 100px;
   min-width: 20px;
   position: relative;
+  background-color: var(--bs-white);
 }
 
 .day img.cat-icon {
@@ -199,4 +200,14 @@ h1 {
   gap: 20px;
   margin-top: 20px;
   margin-bottom: 40px;
+}
+
+.day.enlarge {
+  transform: scale(7.0); /* 要素を2倍に拡大 */
+  transition: transform 0.3s ease-in-out; /* 変形のアニメーションを追加 */
+  z-index: 100; /* 他の要素の上に表示されるように */
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  overflow: visible;
 }
