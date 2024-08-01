@@ -3,22 +3,73 @@ import { ref, listAll, getDownloadURL } from "https://www.gstatic.com/firebasejs
 import { db, storage } from "./firebase-config.js";
 import { getCurrentUserId } from "./getCurrentUserId.js";
 
-// カレンダーの日付要素を生成する関数
-const generateCalendarDays = (daysInMonth) => {
-    const calendarElement = document.querySelector('.calendar');
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0'); // 月を2桁に0埋め
+const day = String(today.getDate()).padStart(2, '0'); // 日を2桁に0埋め
+const yymm = document.getElementById("year-month");
+
+document.addEventListener("DOMContentLoaded", async () => {
+    yymm.textContent = `${year}-${month}`;
+    renderCalendarDays(year, month, day);
+});
+
+document.querySelector(".prev").addEventListener("click", () => upDateMonthYear(-1));
+document.querySelector(".next").addEventListener("click", () => upDateMonthYear(1));
+
+function upDateMonthYear(direction) {
+    let [year, month] = yymm.textContent.split("-").map(Number);
+    month += direction;
+    if (month === 0) {
+        year -= 1;
+        month = 12;
+    } else if (month === 13) {
+        year += 1;
+        month = 1;
+    }
+    yymm.textContent = `${year}-${month}`;
+    removeAllChildren();
+    renderCalendarDays(year, month, day);
+}
+
+// .calendarの子要素を削除する関数
+function removeAllChildren() {
+    const calendarElement = document.querySelector(".calendar");
+    while (calendarElement.firstChild) {
+        calendarElement.removeChild(calendarElement.firstChild);
+    }
+}
+
+async function renderCalendarDays(year, month, day) {
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const formattedMonth = String(month).padStart(2, '0');
+    const formattedDay = String(day).padStart(2, '0');
+    const calendarElement = document.querySelector(".calendar");
     for (let day = 1; day <= daysInMonth; day++) {
-        const dayElement = document.createElement('div');
-        dayElement.className = 'day';
-        dayElement.dataset.day = day;
+        const dayElement = document.createElement("div");
+        dayElement.className = "day";
+        const formattedDay = String(day).padStart(2, '0');
+        dayElement.dataset.day = `${year}-${formattedMonth}-${formattedDay}`;
 
         // 動的に::before擬似要素のcontentを設定
-        const style = document.createElement('style');
-        style.textContent = `.day[data-day="${day}"]::before { content: "${day}"; }`;
+        const style = document.createElement("style");
+        style.textContent = `.day[data-day="${year}-${formattedMonth}-${formattedDay}"]::before { content: "${day}"; }`;
         document.head.appendChild(style);
 
         calendarElement.appendChild(dayElement);
     }
-};
+
+    const userId = await getCurrentUserId();
+    // Firestoreからデータを取得
+    const catsDocs = await getDocs(collection(db, `users/${userId}/cats`));
+    showCatCollection(catsDocs);
+    // firestorageから画像を取得
+    const imagesRef = ref(storage, `photos/${userId}/`);
+    getImagesFromStorage(imagesRef);
+
+    // カレンダーの日付をクリックしたときの処理
+    addClickEventToCalendarDays();
+}
 
 // データを取得してカレンダーに表示する関数
 const showCatCollection = (catsDocs) => {
@@ -27,9 +78,7 @@ const showCatCollection = (catsDocs) => {
         const date = catsdoc.id;
         const catImageURL = data.catImageURL;
 
-        // 日付に対応するカレンダーの要素を見つける
-        const day = new Date(date).getDate();
-        const dayElement = document.querySelector(`.calendar .day[data-day="${day}"]`);
+        const dayElement = document.querySelector(`.calendar .day[data-day="${date}"]`);
         if (dayElement) {
             // 画像を追加
             const catImg = document.createElement("img");
@@ -40,20 +89,7 @@ const showCatCollection = (catsDocs) => {
     });
 };
 
-document.addEventListener("DOMContentLoaded", async () => {
-    // 現在の月の日数を取得
-    const now = new Date();
-    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    // カレンダーの日付要素を生成
-    generateCalendarDays(daysInMonth);
-
-    // Firestoreからデータを取得
-    const userId = await getCurrentUserId();
-    const catsDocs = await getDocs(collection(db, `users/${userId}/cats`));
-    // 取得したねこをカレンダーに表示
-    showCatCollection(catsDocs);
-
-    // カレンダーの日付要素にクリックイベントを追加
+function addClickEventToCalendarDays() {
     const calendarDays = document.querySelectorAll(".day");
     calendarDays.forEach(day => {
         day.addEventListener("click", (event) => {
@@ -67,37 +103,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
     });
-
-    getImagesFromStorage();
-})
-
-function extractDate(url) {
-    // 正規表現を使って日付部分を抽出
-    const datePattern = /(\d{4})-(\d{2})-(\d{2})T/;
-    const match = url.match(datePattern);
-
-    if (match) {
-        const year = match[1];
-        const month = parseInt(match[2], 10); // 文字列の月を整数に変換
-        const day = parseInt(match[3], 10);
-
-        // 月が0から始まる場合の変換
-        const formattedMonth = day.toString(); // 先頭の0を削除
-
-        return {
-            year: year,
-            month: formattedMonth,
-            day: day
-        };
-    } else {
-        throw new Error("日付が含まれていないURLです。");
-    }
 }
 
+
 // Firebase Storageから画像を取得して表示する関数
-async function getImagesFromStorage() {
-    const userId = await getCurrentUserId();
-    const imagesRef = ref(storage, `photos/${userId}/`);
+async function getImagesFromStorage(imagesRef) {
     try {
         const result = await listAll(imagesRef);
         if (result.items.length === 0) {
@@ -106,11 +116,27 @@ async function getImagesFromStorage() {
         }
         result.items.forEach(async (imageRef) => {
             const photoImageUrl = await getDownloadURL(imageRef);
-            const date = extractDate(photoImageUrl);
-            const day = date.day;
-            document.querySelector(`.calendar .day[data-day="${day}"]`).style.backgroundImage = `url(${photoImageUrl})`;
+            const yyyymmdd = extractDate(photoImageUrl);
+            const calendarDay = document.querySelector(`.calendar .day[data-day="${yyyymmdd}"]`);
+            calendarDay.style.backgroundImage = `url(${photoImageUrl})`;
         });
     } catch (error) {
         console.error("Error fetching images:", error);
+    }
+}
+
+function extractDate(url) {
+    // 正規表現を使って日付部分を抽出
+    const datePattern = /(\d{4})-(\d{2})-(\d{2})T/;
+    const match = url.match(datePattern);
+
+    if (match) {
+        const year = match[1];
+        const month = match[2];
+        const day = match[3];
+
+        return `${year}-${month}-${day}`;
+    } else {
+        throw new Error("日付が含まれていないURLです。");
     }
 }
