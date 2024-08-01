@@ -132,7 +132,6 @@ body {
 
 .photo-button {
   min-height: 56px;
-  width: 80%;
   border: none;
   color: var(--bs-white);
   cursor: pointer;

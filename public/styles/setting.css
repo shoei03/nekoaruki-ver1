@@ -129,11 +129,6 @@ h1 {
   color: var(--bs-white);
 }
 
-.delete-box {
-  display: flex;
-  justify-content: flex-start;
-}
-
 .delete-icon {
   width: 4rem;
   height: 4rem;
@@ -143,10 +138,12 @@ h1 {
 .delete-button {
   flex-grow: 1;
   font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .button-container {
-  width: 100%;
   position: fixed;
   bottom: 0;
   margin-bottom: 40px;
