@@ -1,6 +1,7 @@
 import { storage } from "./firebase-config.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js";
 import { getCurrentUserId } from "./getCurrentUserId.js";
+// aaa
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userId = await getCurrentUserId();
