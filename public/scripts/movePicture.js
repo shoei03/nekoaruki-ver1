@@ -152,23 +152,23 @@ function movePicture() {
     // 画像を左端から動かす
     var keyframes = [
       { transform: getLimitedTransform('translate(0px, 0px)'), offset: 0 },
-      { transform: getLimitedTransform('translate(100px, -100px)'), offset: 0.05 },
-      { transform: getLimitedTransform('translate(100px, -100px)'), offset: 0.1 },
-      { transform: getLimitedTransform('translate(0px, -200px)'), offset: 0.2 },
-      { transform: getLimitedTransform('translate(0px, -200px)'), offset: 0.25 },
-      { transform: getLimitedTransform('translate(-200px, 0px)'), offset: 0.35 },
-      { transform: getLimitedTransform('translate(-200px, 0px)'), offset: 0.4 },
-      { transform: getLimitedTransform('translate(0px, 200px)'), offset: 0.5 },
-      { transform: getLimitedTransform('translate(0px, 200px)'), offset: 0.55 },
-      { transform: getLimitedTransform('translate(100px, 100px)'), offset: 0.65 },
+      { transform: getLimitedTransform('translate(100px, -100px)'), offset: 0.02 },
+      { transform: getLimitedTransform('translate(100px, -100px)'), offset: 0.15 },
+      { transform: getLimitedTransform('translate(0px, -200px)'), offset: 0.17 },
+      { transform: getLimitedTransform('translate(0px, -200px)'), offset: 0.30 },
+      { transform: getLimitedTransform('translate(-200px, 0px)'), offset: 0.32 },
+      { transform: getLimitedTransform('translate(-200px, 0px)'), offset: 0.45 },
+      { transform: getLimitedTransform('translate(0px, 200px)'), offset: 0.47 },
+      { transform: getLimitedTransform('translate(0px, 200px)'), offset: 0.60 },
+      { transform: getLimitedTransform('translate(100px, 100px)'), offset: 0.62 },
       { transform: getLimitedTransform('translate(100px, 100px)'), offset: 0.75 },
-      { transform: getLimitedTransform('translate(0px, 0px)'), offset: 0.8 }
+      { transform: getLimitedTransform('translate(0px, 0px)'), offset: 0.77 }
     ];
 
     const animation = catImage.animate(keyframes,
       {
         fill: 'forwards',
-        duration: 30000,
+        duration: 200000,
         iterations: Infinity,
       }
     );
