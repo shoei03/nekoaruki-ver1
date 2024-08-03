@@ -66,8 +66,8 @@
       </div>
     </header>
     <div class="container full">
-      <img src="src/cat.png" alt="" class="obstacle-1">
-      <img src="src/cat.png" alt="" class="obstacle-2">
+      <!-- <img src="src/cat.png" alt="" class="obstacle-1">
+      <img src="src/cat.png" alt="" class="obstacle-2"> -->
       <div class="picture">
       </div>
       <div class="photo">
@@ -76,6 +76,7 @@
             <div><button class="btn js-start">開始</button></div>
             <div><button class="btn js-stop">停止</button></div>
             <div><button class="btn js-change">切替</button></div></div>
+            <div><button id="takePhotoButton">撮影</button></div>
           <div>
           <div class="js-camera">
             <video width="640" height="480" id="video" autoplay="autoplay"></video>
@@ -91,7 +92,7 @@
       <!-- 写真を撮るボタン -->
       <!-- <button id="takePhotoButton" class="btn btn-lg photo-button" style="display: none;"><img src="src/camera.png" alt="take a photo"></button> -->
       <!-- 画像キャプチャ用のキャンバス -->
-      <!-- <canvas id="canvas" style="display: none;"></canvas> -->
+      <canvas id="canvas" style="display: none;"></canvas>
       <button class="btn btn-lg button" onclick="location.href='walking.html'">
         あるく
       </button>
