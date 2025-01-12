@@ -75,16 +75,19 @@ async function renderCalendarDays(year, month, day) {
 const showCatCollection = (catsDocs) => {
     catsDocs.forEach((catsdoc) => {
         const data = catsdoc.data();
-        const date = catsdoc.id;
-        const catImageURL = data.catImageURL;
+        const isSaved = data.isSaved;
+        if (isSaved) {
+            const date = catsdoc.id;
+            const catImageURL = data.catImageURL;
 
-        const dayElement = document.querySelector(`.calendar .day[data-day="${date}"]`);
-        if (dayElement) {
-            // 画像を追加
-            const catImg = document.createElement("img");
-            catImg.src = catImageURL;
-            catImg.className = "cat-icon";
-            dayElement.appendChild(catImg);
+            const dayElement = document.querySelector(`.calendar .day[data-day="${date}"]`);
+            if (dayElement) {
+                // 画像を追加
+                const catImg = document.createElement("img");
+                catImg.src = catImageURL;
+                catImg.className = "cat-icon";
+                dayElement.appendChild(catImg);
+            }
         }
     });
 };
@@ -111,7 +114,6 @@ async function getImagesFromStorage(imagesRef) {
     try {
         const result = await listAll(imagesRef);
         if (result.items.length === 0) {
-            console.log("No images found in the photos folder.");
             return;
         }
         result.items.forEach(async (imageRef) => {

@@ -6,7 +6,7 @@ const getCurrentUserId = () => {
       onAuthStateChanged(auth, (user) => {
           if (!user) {
               reject('ユーザーがログインしていません。');
-              window.location.href = '../login.html';
+              window.location.href = './login.html';
           } else {
               resolve(user.uid);
           }

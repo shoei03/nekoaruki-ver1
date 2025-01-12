@@ -1,10 +1,6 @@
 /* 共通部分 */
 body {
-  font-family:
-    'Noto Sans JP',
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
+  font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .header {
@@ -200,7 +196,7 @@ h1 {
 }
 
 .day.enlarge {
-  transform: scale(7.0); /* 要素を2倍に拡大 */
+  transform: scale(7); /* 要素を2倍に拡大 */
   transition: transform 0.3s ease-in-out; /* 変形のアニメーションを追加 */
   z-index: 100; /* 他の要素の上に表示されるように */
   position: absolute;

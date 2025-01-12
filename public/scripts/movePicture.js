@@ -1,7 +1,6 @@
 import { collection, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
 import { db } from "./firebase-config.js";
 import { getCurrentUserId } from "./getCurrentUserId.js";
-import { catImages } from "./displayTodaysCat.js";
 
 const getRecentDates = (days) => {
   const dates = [];
@@ -40,7 +39,7 @@ const displayCatsFromLastFourDays = async () => {
     const picture = document.querySelector(".picture");
     recentCats.forEach(cat => {
       picture.innerHTML += `
-        <img src="${cat.catImageURL}" id="movableCat">
+        <img src="${cat.catImageURL}" id="movableCat" class="layer-2">
       `;
     });
   } else {

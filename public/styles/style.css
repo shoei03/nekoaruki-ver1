@@ -59,17 +59,15 @@ body {
 }
 
 .button {
-  min-height: 56px;
-  width: 80%;
-  background-color: var(--bs-green);
+  width: 100px;
+  height: 100px;
   border: none;
-  color: var(--bs-white);
   cursor: pointer;
-  box-shadow: 0 8px 8px rgba(0, 0, 0, 0.5);
   position: fixed;
   bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 3;
 }
 
 .menu {
@@ -88,21 +86,25 @@ body {
   position: relative;
   width: 100%;
   min-height: 100vh;
-  background: url("")
-    center / cover;
+  padding: 0;
 }
 
-.obstacle-1 {
+.layer-1 {
   position: absolute;
-  right: 0;
-  z-index: 2;
+  z-index: 1;
+  object-fit: cover;
 }
 
-.obstacle-2 {
-  position: absolute;
-  left: 0;
-  bottom: 200px;
+.layer-2 {
   z-index: 2;
+  pointer-events: auto; /* クリックイベントを有効にする */
+}
+
+.layer-3 {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none; /* 透明部分をクリック可能にする */
+  object-fit: cover;
 }
 
 .picture-container {
@@ -126,201 +128,129 @@ body {
 }
 
 #video {
-  max-width: 100%;
-  max-height: 100%;
-}
-
-.photo-button {
-  min-height: 56px;
-  border: none;
-  color: var(--bs-white);
-  cursor: pointer;
-  position: fixed;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
-}
-
-#home-button {
-  min-height: 56px;
-  width: 80%;
-  border: none;
-  color: var(--bs-white);
-  cursor: pointer;
-  position: fixed;
-  left: 20%;
-  transform: translateX(-50%);
-  z-index: 3;
-}
-
-.h-flex {
-  display: flex;
-}
-
-.camera-button {
-  width: 70px;
-  height: 70px;
-}
-
-
-/* ハンバーガーボタン */
-.hamburger {
-  display: block;
-  height: 60px;
-  margin-left: auto;
-  position: relative;
-  z-index: 10;
-  width: 60px;
-  border: none;
-  background-color: transparent;
-}
-.hamburger.-active .hamburger__line {
-  background-color: transparent;
-}
-.hamburger.-active .hamburger__line::before {
-  top: 0;
-  transform: rotate(45deg);
-}
-.hamburger.-active .hamburger__line::after {
-  top: 0;
-  transform: rotate(-45deg);
-}
-.hamburger.-active .hamburger__text::before {
-  content: "閉じる";
-}
-.hamburger__line {
-  display: block;
-  height: 2px;
-  position: absolute;
-  top: 23px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 24px;
-  background-color: #172e59;
-  transition: 0.4s;
-}
-.hamburger__line:before,
-.hamburger__line:after {
-  content: "";
-  display: block;
-  height: 100%;
-  position: absolute;
-  width: 100%;
-  background-color: #172e59;
-  transition: inherit;
-}
-.hamburger__line:before {
-  top: -6px;
-}
-.hamburger__line:after {
-  top: 6px;
-}
-.hamburger__text {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-}
-.hamburger__text::before {
-  content: "メニュー";
-  text-align: center;
-  color: #172e59;
-  font-size: 10px;
-  font-weight: 900;
-}
-.header__nav-area {
-  position: fixed;
-  top: 0;
-  left: -100%;
-  z-index: 9;
   height: 100vh;
-  width: 100%;
-  visibility: hidden;
-  padding-top: 60px;
-  background-color: #fff;
-  transition: 0.4s;
 }
-.header__nav-area.-active {
+
+.blank {
+  height: 50vh;
+  width: 100%;
+}
+
+.start-button {
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  top: 0;
   left: 0;
-  visibility: visible;
+  display: block;
 }
-.global-navigation {
-  padding-top: 40px;
-  padding-right: 25px;
-  padding-bottom: 120px;
-  padding-left: 25px;
+
+.stop-button {
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+  z-index: 10;
 }
-.global-navigation__list > li {
-  padding-bottom: 20px;
-  border-bottom: 2px solid #e7e9ee;
+
+.change-button {
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: none;
+  z-index: 10;
 }
-.global-navigation__list > li + li {
-  margin-top: 20px;
+
+.take-photo-button {
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  bottom: 0;
+  left: 40%;
+  display: none;
+  z-index: 10;
 }
-.global-navigation__link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #172e59;
-  font-weight: 900;
-  transition: color 0.4s;
-  font-size: 1.5rem;
-}
-.global-navigation__link.-accordion {
-  position: relative;
-  background: none;
-  border: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+
+.flash {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  padding: 0;
+  height: 100%;
+  background: white;
+  opacity: 0.8;
+  z-index: 9999;
+  pointer-events: none;
+  animation: flashAnimation 0.5s ease-out;
 }
-.global-navigation__link.-accordion::after {
-  content: "";
-  display: block;
-  height: 12px;
-  position: absolute;
-  top: 50%;
-  right: 5px;
-  width: 2px;
-  background-color: #ed3242;
-  transform: translateY(-50%);
-  transition: transform 0.4s;
+
+@keyframes flashAnimation {
+  from { opacity: 0.8; }
+  to { opacity: 0; }
 }
-.global-navigation__link.-accordion::before {
-  content: "";
-  display: block;
-  height: 2px;
-  position: absolute;
-  top: 50%;
+
+.menu-button {
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  top: 0;
   right: 0;
-  width: 12px;
-  background-color: #ed3242;
-  transform: translateY(-50%);
+  z-index: 4;
+  display: block;
 }
-.global-navigation__link.-active::after {
-  transform: translateY(-50%) rotate(-90deg);
+
+.close-button {
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 5;
+  display: none;
 }
-.accordion {
-  height: 0;
-  overflow: hidden;
-  visibility: hidden;
-  transition: 0.4s;
+
+.popup {
+  display: none; /* 初期状態では表示しない */
+  position: fixed;
+  width: 50%;
+  height: 23vh;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: white;
+  border: 1px solid black;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 4;
+  background-image: url('../src/nekoaruki_menuhontai.png'); /* 画像のパスを指定 */
+  background-size: cover;
+  background-position: center;
 }
-.accordion.-active {
-  height: auto;
-  padding-top: 30px;
-  visibility: visible;
+
+.popup-overlay {
+  display: none; /* 初期状態では表示しない */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 4;
 }
-.accordion__list li {
-  font-size: 0.75rem;
+
+.item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  cursor: pointer;
 }
-.accordion__list li + li {
-  margin-top: 21px;
-}
-.accordion__link {
-  color: #172e59;
+
+.a-img {
+  width: 80px;
+  height: 80px;
 }
